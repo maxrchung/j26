@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bgkp7s3hosgxu"]
 
-[ext_resource type="Texture2D" uid="uid://mqookf8tkuem" path="res://mj/card_sheet.png" id="1_52ff7"]
+[ext_resource type="Texture2D" uid="uid://bevtgstl5m6mx" path="res://mj/card_sheet.png" id="1_52ff7"]
 [ext_resource type="Script" uid="uid://d0a4535fu80b6" path="res://objects/playing_card.gd" id="1_yy2wv"]
 [ext_resource type="Shader" uid="uid://bwot8tj4lkfow" path="res://objects/shaders/card_basic.gdshader" id="2_sb5rw"]
 

@@ -11,6 +11,9 @@ class_name Card
 ## Number values match themselves, JQKA are 11, 12, 13, 14
 @export var number = 2
 
+## Width of card in pixels
+static var width = 250
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	# Index
