@@ -1,47 +1,49 @@
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Http.HttpResults;
+using System.Text.Json;
+using JamServer.Controllers;
+using JamServer.Game;
+using JamServer.Lobby;
+using JamServer.Models;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
-    options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
+    options.SerializerOptions.TypeInfoResolverChain.Insert(0, JamJsonContext.Default);
+    options.SerializerOptions.TypeInfoResolverChain.Insert(0, GameJsonContext.Default);
+    options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
 });
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.AddLogging();
+builder.Services.AddSingleton<LobbyCoordinator>();
+
+builder.Services.AddSingleton<LobbyController>();
+builder.Services.AddSingleton<GameController>();
+
 var app = builder.Build();
+
+app.UseWebSockets();
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    Console.WriteLine("OpenAPI is enabled");
+    app.UseSwaggerUI(options => { options.SwaggerEndpoint("/openapi/v1.json", "JamServer API V1"); });
+    app.MapSwaggerUI();
 }
 
-Todo[] sampleTodos =
-[
-    new(1, "Walk the dog"),
-    new(2, "Do the dishes", DateOnly.FromDateTime(DateTime.Now)),
-    new(3, "Do the laundry", DateOnly.FromDateTime(DateTime.Now.AddDays(1))),
-    new(4, "Clean the bathroom"),
-    new(5, "Clean the car", DateOnly.FromDateTime(DateTime.Now.AddDays(2)))
-];
-
-var todosApi = app.MapGroup("/todos");
-todosApi.MapGet("/", () => sampleTodos)
-    .WithName("GetTodos");
-
-todosApi.MapGet("/{id}", Results<Ok<Todo>, NotFound> (int id) =>
-        sampleTodos.FirstOrDefault(a => a.Id == id) is { } todo
-            ? TypedResults.Ok(todo)
-            : TypedResults.NotFound())
-    .WithName("GetTodoById");
+var apiRoute = app.MapGroup("/api/v1");
+app.MapService<LobbyController>(apiRoute);
+app.MapService<GameController>(apiRoute);
 
 app.Run();
 
-public record Todo(int Id, string? Title, DateOnly? DueBy = null, bool IsComplete = false);
-
-[JsonSerializable(typeof(Todo[]))]
-internal partial class AppJsonSerializerContext : JsonSerializerContext
+internal static class AppExtensions
 {
+    internal static void MapService<T>(this WebApplication app, IEndpointRouteBuilder endpoints) where T : IController
+    {
+        app.Services.GetRequiredService<T>().Map(endpoints);
+    }
 }
