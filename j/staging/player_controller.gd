@@ -53,7 +53,7 @@ func _handle_rsp(text: String) -> void:
 	if "lobbyChange" in d:
 		myLobbyId = d.lobbyChange.id
 		$"../LobbyIdText".text = "Lobby: " + myLobbyId
-			
+		
 	if "localIdChange" in d:
 		myPlayerId = d.localIdChange
 		$"../PlayerIdText".text = "Player: " + myPlayerId
@@ -86,3 +86,7 @@ func _process(_delta: float) -> void:
 func _on_send_json_button_pressed() -> void:
 	var text = $"../SendJsonText".text
 	socket.send_text(text)
+
+
+func _on_start_button_pressed() -> void:
+	pass # Replace with function body.
