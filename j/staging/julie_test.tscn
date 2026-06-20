@@ -16,32 +16,33 @@ lobbyList = NodePath("../ItemList")
 
 [node name="LineEdit" type="LineEdit" parent="." unique_id=437873862]
 offset_left = 13.0
-offset_top = 172.0
+offset_top = 213.0
 offset_right = 149.0
-offset_bottom = 203.0
+offset_bottom = 244.0
 placeholder_text = "player name"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1498088175]
 offset_left = 176.0
-offset_top = 75.0
+offset_top = 116.0
 offset_right = 386.0
-offset_bottom = 214.0
+offset_bottom = 255.0
 
 [node name="Button" type="Button" parent="." unique_id=1572874277]
 offset_left = 161.0
-offset_top = 172.0
+offset_top = 213.0
 offset_right = 244.0
-offset_bottom = 203.0
+offset_bottom = 244.0
 text = "join
 "
 
 [node name="ItemList" type="ItemList" parent="." unique_id=810656343]
 offset_left = 9.0
-offset_top = 13.0
+offset_top = 54.0
 offset_right = 366.0
-offset_bottom = 168.0
+offset_bottom = 209.0
 
 [node name="PlayingCard" parent="." unique_id=592686736 instance=ExtResource("2_fu00b")]
+visible = false
 position = Vector2(578, 190)
 suit = 2
 number = 7
@@ -65,27 +66,27 @@ text = "Send Json Request"
 
 [node name="LobbyIdText" type="Label" parent="." unique_id=1002534460]
 offset_left = 13.0
-offset_top = 214.0
-offset_right = 53.0
-offset_bottom = 237.0
+offset_top = 255.0
+offset_right = 65.0
+offset_bottom = 278.0
 text = "Lobby:"
 
 [node name="PlayerIdText" type="Label" parent="." unique_id=1173182417]
 offset_left = 13.0
-offset_top = 237.0
-offset_right = 53.0
-offset_bottom = 260.0
+offset_top = 278.0
+offset_right = 66.0
+offset_bottom = 301.0
 text = "Player:"
 
 [node name="StartButton" type="Button" parent="." unique_id=1283160164]
 offset_left = 13.0
-offset_top = 269.0
+offset_top = 310.0
 offset_right = 119.0
-offset_bottom = 300.0
+offset_bottom = 341.0
 text = "START GAME"
 
 [node name="PlayerInfos" type="Node2D" parent="." unique_id=1647946707]
-position = Vector2(9, 309)
+position = Vector2(13, 365)
 script = ExtResource("3_8y7d7")
 player_info_scene = ExtResource("4_6rarn")
 
@@ -112,8 +113,24 @@ offset_right = 251.0
 offset_bottom = 641.0
 text = "Vote against"
 
+[node name="ConnectButton" type="Button" parent="." unique_id=1155131296]
+offset_left = 244.0
+offset_top = 12.0
+offset_right = 316.0
+offset_bottom = 43.0
+text = "Connect"
+
+[node name="ConnectText" type="TextEdit" parent="." unique_id=332784921]
+offset_left = 13.0
+offset_top = 12.0
+offset_right = 230.0
+offset_bottom = 47.0
+text = "localhost"
+placeholder_text = "localhost"
+
 [connection signal="pressed" from="SendJsonButton" to="PlayerController" method="_on_send_json_button_pressed"]
 [connection signal="pressed" from="StartButton" to="PlayerController" method="_on_start_button_pressed"]
 [connection signal="pressed" from="EmergencyMeetingButton" to="PlayerController" method="_on_emergency_meeting_button_pressed"]
 [connection signal="pressed" from="VoteForButton" to="PlayerController" method="_on_vote_for_button_pressed"]
 [connection signal="pressed" from="VoteAgainstButton" to="PlayerController" method="_on_vote_against_button_pressed"]
+[connection signal="pressed" from="ConnectButton" to="PlayerController" method="_on_connect_button_pressed"]

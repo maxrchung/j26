@@ -7,7 +7,7 @@ extends Node
 var socket = WebSocketPeer.new()
 var json = JSON.new()
 var itemMap: Dictionary[int, String] = {}
-
+var is_connected = false
 
 enum ClientState {
 	Connecting,
@@ -26,7 +26,11 @@ var playerHands
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	joinButton.pressed.connect(_do_join)
-	socket.connect_to_url("ws://localhost:5092/api/v1/game/socket")
+
+func _on_connect_button_pressed() -> void:
+	var host = $"../ConnectText".text
+	socket.connect_to_url("ws://" + host + ":5092/api/v1/game/socket")
+	is_connected = true
 
 func _invoke(name: String, value):
 	var body = {"id": 0}
@@ -89,7 +93,8 @@ func _process_socket() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	_process_socket()
+	if is_connected:
+		_process_socket()
 	pass
 
 
