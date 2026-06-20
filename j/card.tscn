@@ -10,7 +10,6 @@ region_enabled = true
 region_rect = Rect2(0, 0, 250, 350)
 script = ExtResource("2_q5obu")
 is_front = true
-suit = "heart"
 number = 5
 
 [node name="Face" type="Sprite2D" parent="." unique_id=663863204]

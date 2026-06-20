@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bevtgstl5m6mx"
-path="res://.godot/imported/card_sheet.png-f42dc9a02ff5046efa30a3447884053d.ctex"
+uid="uid://5dcliebmrfap"
+path="res://.godot/imported/bs_button.png-10d7ba3a7ad3527529182debb320faa8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://mj/card_sheet.png"
-dest_files=["res://.godot/imported/card_sheet.png-f42dc9a02ff5046efa30a3447884053d.ctex"]
+source_file="res://mj/bs_button.png"
+dest_files=["res://.godot/imported/bs_button.png-10d7ba3a7ad3527529182debb320faa8.ctex"]
 
 [params]
 
