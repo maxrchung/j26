@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://bbeffmus5r6m1" path="res://staging/player_infos.gd" id="3_8y7d7"]
 [ext_resource type="PackedScene" uid="uid://dx6kxaydpudjl" path="res://player_info.tscn" id="4_6rarn"]
 [ext_resource type="PackedScene" uid="uid://bg6hoi1sxwl2v" path="res://hand.tscn" id="5_jkla0"]
+[ext_resource type="PackedScene" uid="uid://c5yj2r1lrorg" path="res://bid_mpregs.tscn" id="6_nh24k"]
 
 [node name="Node2D" type="Node2D" unique_id=866605961]
 
@@ -128,9 +129,20 @@ offset_bottom = 47.0
 text = "localhost"
 placeholder_text = "localhost"
 
+[node name="BidButton" type="Button" parent="." unique_id=1883378963]
+offset_left = 538.0
+offset_top = 388.0
+offset_right = 630.0
+offset_bottom = 419.0
+text = "Submit bid"
+
+[node name="BidMpregs" parent="." unique_id=176062230 instance=ExtResource("6_nh24k")]
+position = Vector2(538, 310)
+
 [connection signal="pressed" from="SendJsonButton" to="PlayerController" method="_on_send_json_button_pressed"]
 [connection signal="pressed" from="StartButton" to="PlayerController" method="_on_start_button_pressed"]
 [connection signal="pressed" from="EmergencyMeetingButton" to="PlayerController" method="_on_emergency_meeting_button_pressed"]
 [connection signal="pressed" from="VoteForButton" to="PlayerController" method="_on_vote_for_button_pressed"]
 [connection signal="pressed" from="VoteAgainstButton" to="PlayerController" method="_on_vote_against_button_pressed"]
 [connection signal="pressed" from="ConnectButton" to="PlayerController" method="_on_connect_button_pressed"]
+[connection signal="pressed" from="BidButton" to="PlayerController" method="_on_bid_button_pressed"]

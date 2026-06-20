@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://c5yj2r1lrorg"]
+
+[ext_resource type="Script" uid="uid://b1yqwsf2kpff0" path="res://bid_mpregs.gd" id="1_edalv"]
+[ext_resource type="PackedScene" uid="uid://cgv71twurd5sv" path="res://bid_mpreg.tscn" id="2_k6kuq"]
+
+[node name="BidMpregs" type="Node2D" unique_id=176062230]
+script = ExtResource("1_edalv")
+bid_scene = ExtResource("2_k6kuq")

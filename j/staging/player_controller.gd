@@ -115,3 +115,8 @@ func _on_vote_for_button_pressed() -> void:
 
 func _on_vote_against_button_pressed() -> void:
 	_invoke("invokeCtl", "EmergencyMeetingVoteAgainst")
+
+
+func _on_bid_button_pressed() -> void:
+	var cards = $"../BidMpregs".get_cards()
+	_invoke("bid", { "cards": cards } )
