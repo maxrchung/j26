@@ -12,8 +12,11 @@ void vertex() {
 }
 
 void fragment() {
+	float brightness = (sin((UV.y * 20.f) - TIME + (UV.x * ((cos(TIME) * 50.f) - 50.f))) + 1.f) / 4.f + 0.5f;
+	
 	vec4 orig = texture(TEXTURE, UV);
 	vec3 transformed = vec3(orig.r, orig.g, orig.b);
+	transformed *= brightness;
 	
 	COLOR = vec4(transformed, orig.a);
 }

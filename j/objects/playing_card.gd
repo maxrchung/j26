@@ -13,9 +13,9 @@ enum Suit {
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	var back = $"VisibleCard/BackTexture"
-	var face = $"VisibleCard/FaceTexture"
-	var border = $"VisibleCard/BorderTexture"
+	var back = $"BackTexture"
+	var face = $"FaceTexture"
+	var border = $"BorderTexture"
 	
 	if not face_up:
 		back.region_rect = Rect2(250, 0, 250, 350)
