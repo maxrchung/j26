@@ -24,4 +24,8 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\BalaloGame\BalaloGame.csproj" />
+    </ItemGroup>
+
 </Project>

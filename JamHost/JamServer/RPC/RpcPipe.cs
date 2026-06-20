@@ -9,25 +9,10 @@ public interface IRpcListener
     public ValueTask<OkResponse> ConnectAsync(ConnectRequest req);
 
     public ValueTask<IReadOnlyList<LobbyListEntry>> GetLobbyListAsync();
-}
 
-public class DummyServer : IRpcListener
-{
-    public ValueTask<OkResponse> ConnectAsync(ConnectRequest req)
-    {
-        Console.WriteLine($"Got connect request from {req.Version}");
-        return ValueTask.FromResult(new OkResponse { Message = "ok" });
-    }
+    public ValueTask<OkResponse> JoinLobbyAsync(Guid lobbyId, string playerName);
 
-    public ValueTask<IReadOnlyList<LobbyListEntry>> GetLobbyListAsync()
-    {
-        return ValueTask.FromResult<IReadOnlyList<LobbyListEntry>>(new List<LobbyListEntry>
-        {
-            new("Lobby 1", Guid.NewGuid()),
-            new("Lobby 2", Guid.NewGuid()),
-        });
-    }
-
+    public void OnError(Exception e);
 }
 
 public class RpcPipe
@@ -51,6 +36,10 @@ public class RpcPipe
         {
             rsp.Ok = await _server.ConnectAsync(req.Connect);
         }
+        else if (req.Join != null)
+        {
+            rsp.Ok = await _server.JoinLobbyAsync(req.Join.LobbyId, req.Join.PlayerName);
+        }
         else if (req.GetInfo != null)
         {
             if (req.GetInfo == GetInfoType.Lobbies)
@@ -70,7 +59,7 @@ public class RpcPipe
         return rsp;
     }
 
-    private async Task Send(RpcResponse rsp)
+    public async Task Send(RpcResponse rsp)
     {
         var data = JsonSerializer.SerializeToUtf8Bytes(rsp, RpcJsonContext.Default.RpcResponse);
         await _socket.SendAsync(data, WebSocketMessageType.Text, true, _token);
@@ -88,12 +77,11 @@ public class RpcPipe
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
             await Send(new RpcResponse { Id = id, Error = e.Message });
         }
     }
 
-    public async Task RunAsync()
+    private async Task RunAsyncInner()
     {
         var buf = WebSocket.CreateServerBuffer(4096);
         var recvResult = await _socket.ReceiveAsync(buf, _token);
@@ -104,5 +92,17 @@ public class RpcPipe
         }
 
         await _socket.CloseAsync(recvResult.CloseStatus.Value, recvResult.CloseStatusDescription, _token);
+    }
+
+    public async Task RunAsync()
+    {
+        try
+        {
+            await RunAsyncInner();
+        }
+        catch (Exception e)
+        {
+            _server.OnError(e);
+        }
     }
 }

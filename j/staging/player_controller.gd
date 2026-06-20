@@ -6,6 +6,7 @@ extends Node
 
 var socket = WebSocketPeer.new()
 var json = JSON.new()
+var itemMap: Dictionary[int, String] = {}
 
 enum ClientState {
 	Connecting,
@@ -21,8 +22,16 @@ func _ready() -> void:
 	joinButton.pressed.connect(_do_join)
 	socket.connect_to_url("ws://localhost:5092/api/v1/game/socket")
 
+func _invoke(name: String, value):
+	var body = {"id": 0}
+	body[name] = value
+	socket.send_text(JSON.stringify(body))
+
 func _do_join() -> void:
-	name = nameField.text
+	var name = nameField.text
+	var lobbyId = itemMap[lobbyList.get_selected_items()[0]]
+	print("joining ", lobbyId, " as ", name)
+	_invoke("join", {"lobbyId": lobbyId, "playerName": name})
 
 func _handle_rsp(text: String) -> void:
 	var err = json.parse(text)
@@ -33,8 +42,9 @@ func _handle_rsp(text: String) -> void:
 	print(d)
 	if "lobbyList" in d:
 		lobbyList.clear()
+		itemMap = {}
 		for lobby in d.lobbyList:
-			lobbyList.add_item(lobby.name)
+			itemMap[lobbyList.add_item(lobby.name)] = lobby.id
 
 func _process_socket() -> void:
 	if clientState == ClientState.Failed: return
@@ -47,8 +57,8 @@ func _process_socket() -> void:
 	if clientState == ClientState.Connecting:
 		print("websocket connected")
 		clientState = ClientState.Idle
-		socket.send_text('{"id": 0, "connect": {"version": "hi"}}')
-		socket.send_text('{"id": 0, "getInfo": "lobbies"}')
+		_invoke("connect", {"version": "hi"})
+		_invoke("getInfo", "lobbies")
 	while socket.get_available_packet_count() > 0:
 		var packet = socket.get_packet()
 		var text = packet.get_string_from_utf8()

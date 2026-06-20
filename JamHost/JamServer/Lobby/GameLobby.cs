@@ -1,17 +1,21 @@
 using System.Diagnostics.CodeAnalysis;
 using JamServer.Game;
 using JamServer.Models;
+using JamServer.RPC;
 
 namespace JamServer.Lobby;
+
+public class LobbyPlayer
+{
+    public required string Name { get; init; }
+    public required PlayerChannel Channel { get; init; }
+}
 
 public class GameLobby(LobbyCoordinator coordinator, Guid id, string name)
 {
     private readonly Deck _deck = Deck.CreateDefault();
 
-    public record PlayerInfo(string Name);
-
-    private readonly Dictionary<Guid, PlayerInfo> _players = new();
-    private readonly Dictionary<Guid, Guid> _playerKeys = new();
+    private readonly List<LobbyPlayer> _players = new();
 
     public readonly LobbyInfo Info = new()
     {
@@ -19,35 +23,35 @@ public class GameLobby(LobbyCoordinator coordinator, Guid id, string name)
         Name = name,
     };
 
-    public Guid InvitePlayer(string name)
+    private async Task InvokeAll(RpcResponse msg)
     {
-        var id = Guid.NewGuid();
-        var key = Guid.NewGuid();
-        _players.Add(id, new PlayerInfo(name));
-        _playerKeys.Add(key, id);
-        coordinator.AssociateKey(key, this);
-        return key;
+        await Task.WhenAll(_players.Select(x => x.Channel.Send(msg)));
     }
 
-    public bool TryUseKey(Guid key, [MaybeNullWhen(false)] out PlayerInfo player)
+    private async Task BroadcastLobbyChange()
     {
-        if (!_playerKeys.Remove(key, out var id))
+        var msg = new RpcResponse
         {
-            player = null;
-            return false;
-        }
-
-        player = _players[id];
-        return true;
-    }
-
-    public FullLobbyInfo GetFullLobbyInfo()
-    {
-        return new FullLobbyInfo
-        {
-            Id = Info.Id,
-            Name = Info.Name,
-            Cards = _deck.GetCardInfos().ToList(),
+            Id = -1,
+            LobbyChange = new LobbyChangeMessage
+            {
+                Id = Info.Id,
+                Name = Info.Name,
+                Players = _players.Select(x => x.Name).ToList()
+            }
         };
+        await InvokeAll(msg);
+    }
+
+    public async ValueTask<LobbyPlayer> BindPlayer(string name, PlayerChannel channel)
+    {
+        var player = new LobbyPlayer
+        {
+            Name = name,
+            Channel = channel,
+        };
+        _players.Add(player);
+        await BroadcastLobbyChange();
+        return player;
     }
 }

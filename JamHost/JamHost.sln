@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JamServer", "JamServer\JamServer.csproj", "{F281B27A-6E8B-4D80-A6F8-A704BC798E2F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BalaloGame", "BalaloGame\BalaloGame.csproj", "{F82DCA14-1E5C-4D9F-B2B1-0AEF5B64438B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeGame", "FakeGame\FakeGame.csproj", "{1E7232E5-2751-4EC7-80D0-6D821E87F3DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{F281B27A-6E8B-4D80-A6F8-A704BC798E2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F281B27A-6E8B-4D80-A6F8-A704BC798E2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F281B27A-6E8B-4D80-A6F8-A704BC798E2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F82DCA14-1E5C-4D9F-B2B1-0AEF5B64438B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F82DCA14-1E5C-4D9F-B2B1-0AEF5B64438B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F82DCA14-1E5C-4D9F-B2B1-0AEF5B64438B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F82DCA14-1E5C-4D9F-B2B1-0AEF5B64438B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E7232E5-2751-4EC7-80D0-6D821E87F3DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E7232E5-2751-4EC7-80D0-6D821E87F3DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E7232E5-2751-4EC7-80D0-6D821E87F3DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E7232E5-2751-4EC7-80D0-6D821E87F3DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

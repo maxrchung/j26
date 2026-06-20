@@ -16,10 +16,13 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddLogging();
+builder.Services.AddLogging(options =>
+{
+    options.ClearProviders();
+    options.AddSimpleConsole(copts => { copts.SingleLine = true; });
+});
 builder.Services.AddSingleton<LobbyCoordinator>();
 
-builder.Services.AddSingleton<LobbyController>();
 builder.Services.AddSingleton<GameController>();
 
 var app = builder.Build();
@@ -35,7 +38,6 @@ if (app.Environment.IsDevelopment())
 }
 
 var apiRoute = app.MapGroup("/api/v1");
-app.MapService<LobbyController>(apiRoute);
 app.MapService<GameController>(apiRoute);
 
 app.Run();

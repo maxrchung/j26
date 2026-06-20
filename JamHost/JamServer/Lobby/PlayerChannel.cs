@@ -1,37 +1,64 @@
 using System.Net.WebSockets;
-using System.Text;
-using System.Threading.Channels;
-using JamServer.Models;
+using JamServer.RPC;
 
 namespace JamServer.Lobby;
 
-public class PlayerChannel
+public class PlayerChannel : IRpcListener
 {
-    public ChannelReader<GameUpdate> Updates => _updates.Reader;
+    private readonly ILogger<PlayerChannel> _logger;
+    private readonly LobbyCoordinator _coordinator;
+    private readonly RpcPipe _pipe;
+    private string _name = "Player";
+    private LobbyPlayer? _lobbyPlayer = null;
 
-    private readonly Channel<GameUpdate> _updates = Channel.CreateUnbounded<GameUpdate>();
+    public string Name => _name;
 
-    public async Task RunAsync(WebSocket socket)
+    public Task Send(RpcResponse msg) => _pipe.Send(msg);
+
+    public PlayerChannel(IServiceProvider services, WebSocket socket)
     {
-        await socket.SendAsync("CONNECTED"u8.ToArray(), WebSocketMessageType.Text, true, CancellationToken.None);
-        var buf = new byte[1024];
-        var recvResult = await socket.ReceiveAsync(new ArraySegment<byte>(buf), CancellationToken.None);
-        while (!recvResult.CloseStatus.HasValue)
-        {
-            await socket.SendAsync("hi"u8.ToArray(), WebSocketMessageType.Text, true,
-                CancellationToken.None);
-            recvResult = await socket.ReceiveAsync(new ArraySegment<byte>(buf), CancellationToken.None);
-        }
-
-        await socket.CloseAsync(recvResult.CloseStatus.Value, recvResult.CloseStatusDescription,
-            CancellationToken.None);
+        _logger = services.GetRequiredService<ILogger<PlayerChannel>>();
+        _coordinator = services.GetRequiredService<LobbyCoordinator>();
+        _pipe = new RpcPipe(socket, this);
     }
 
-    public async Task PushJoin()
+    public async Task RunAsync()
     {
-        await _updates.Writer.WriteAsync(new GameUpdate
+        await _pipe.RunAsync();
+    }
+
+
+    public ValueTask<OkResponse> ConnectAsync(ConnectRequest req)
+    {
+        return ValueTask.FromResult(new OkResponse { Message = "ok" });
+    }
+
+    public ValueTask<IReadOnlyList<LobbyListEntry>> GetLobbyListAsync()
+    {
+        return ValueTask.FromResult<IReadOnlyList<LobbyListEntry>>(_coordinator.GetLobbies()
+            .Select(x => new LobbyListEntry(x.Id, x.Name)).ToList());
+    }
+
+
+    public async ValueTask<OkResponse> JoinLobbyAsync(Guid lobbyId, string playerName)
+    {
+        if (_lobbyPlayer != null)
         {
-            Type = GameUpdateType.PlayerJoin
-        });
+            throw new Exception("Already in lobby");
+        }
+
+        _name = playerName;
+        if (!_coordinator.TryFindLobby(lobbyId, out var lobby))
+        {
+            throw new Exception("Lobby not found");
+        }
+
+        _lobbyPlayer = await lobby.BindPlayer(playerName, this);
+        return new OkResponse { Message = "joined" };
+    }
+
+    public void OnError(Exception e)
+    {
+        _logger.LogError(e, "Error in player channel");
     }
 }
