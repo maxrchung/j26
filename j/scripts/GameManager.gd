@@ -41,6 +41,7 @@ func _create_other_players() -> void:
 		var instance: OtherPlayer = OTHER_PLAYER_SCENE.instantiate()
 		instance.global_position = spawn_pos
 		instance.player_id = other_player_ids[i]
+		instance.hand_size = randi_range(1, 6)
 		
 		game_state.other_players.append(instance)
 		add_child(instance)

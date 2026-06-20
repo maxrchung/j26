@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dmxrpya7jf6at"]
 
-[ext_resource type="Texture2D" uid="uid://mqookf8tkuem" path="res://mj/card_sheet.png" id="1_q5obu"]
+[ext_resource type="Texture2D" uid="uid://bevtgstl5m6mx" path="res://mj/card_sheet.png" id="1_q5obu"]
 [ext_resource type="Script" uid="uid://to5hdiutjnlu" path="res://card.gd" id="2_q5obu"]
 
 [node name="Card" type="Sprite2D" unique_id=1163130692]
