@@ -100,3 +100,13 @@ func _on_send_json_button_pressed() -> void:
 
 func _on_start_button_pressed() -> void:
 	_invoke("invokeCtl", "StartGame")
+
+
+func _on_emergency_meeting_button_pressed() -> void:
+	_invoke("invokeCtl", "EmergencyMeetingVoteAgainst")
+
+func _on_vote_for_button_pressed() -> void:
+	_invoke("invokeCtl", "EmergencyMeetingVoteFor")
+
+func _on_vote_against_button_pressed() -> void:
+	_invoke("invokeCtl", "EmergencyMeetingVoteAgainst")
