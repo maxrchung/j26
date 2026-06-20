@@ -46,8 +46,6 @@ message JoinRequest {
 message RpcRequest {
   int32 id = 1;
   
-  // Note: If an RpcRequest is only ever ONE of these types at a time, 
-  // you might want to wrap these three fields in a `oneof` block instead.
   ConnectRequest connect = 2;
   GetInfoType get_info = 3;
   JoinRequest join = 4;

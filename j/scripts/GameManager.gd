@@ -1,6 +1,6 @@
 extends Node
 
-const PLAYER_SCENE = preload("res://scenes/Player.tscn")
+#const PLAYER_SCENE = preload("res://scenes/Player.tscn")
 const OTHER_PLAYER_SCENE = preload("res://scenes/OtherPlayer.tscn")
 
 @export var spawn_path: Path2D
