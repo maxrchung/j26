@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://dx6kxaydpudjl"]
+
+[ext_resource type="Script" uid="uid://dv46fqmd3xcfi" path="res://player_info.gd" id="1_4ky21"]
+
+[node name="PlayerInfo" type="Node2D" unique_id=1750464247]
+script = ExtResource("1_4ky21")
+
+[node name="Name" type="Label" parent="." unique_id=1704878955]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Name: "
+
+[node name="CardCount" type="Label" parent="." unique_id=937883527]
+offset_top = 23.0
+offset_right = 47.0
+offset_bottom = 46.0
+text = "Cards: "

@@ -21,6 +21,8 @@ var clientState: ClientState = ClientState.Connecting
 var myLobbyId
 var myPlayerId
 
+var playerHands
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	joinButton.pressed.connect(_do_join)
@@ -57,6 +59,12 @@ func _handle_rsp(text: String) -> void:
 	if "localIdChange" in d:
 		myPlayerId = d.localIdChange
 		$"../PlayerIdText".text = "Player: " + myPlayerId
+		
+	if "playerHands" in d:
+		playerHands = d.playerHands
+		
+		$"../PlayerInfos".update_players(playerHands)
+
 
 func _process_socket() -> void:
 	if clientState == ClientState.Failed: return
