@@ -227,6 +227,10 @@ func _on_send_json_button_pressed() -> void:
 
 
 func _on_start_button_pressed() -> void:
+	if not playerHands or playerHands.size() < 2:
+		print('preventing start game because too few people')
+		return
+	
 	_invoke("invokeCtl", "StartGame")
 	
 
