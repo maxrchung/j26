@@ -25,8 +25,14 @@ public record EmergencyMeetingState
         VotesAgainst.Clear();
     }
 
-    public List<GameLobbyPlayer> VotesFor { get; init; } = [];
-    public List<GameLobbyPlayer> VotesAgainst { get; init; } = [];
+    public void Reset() {
+        IsActive = false;
+        VotesFor.Clear();
+        VotesAgainst.Clear();
+    }
+
+    public List<GamePlayer> VotesFor { get; init; } = [];
+    public List<GamePlayer> VotesAgainst { get; init; } = [];
 
     public EmergencyMeetingInfo ToRpc() => new()
     {
@@ -165,18 +171,34 @@ public class GameLobby
         if (_board.ValidateBid(bid))
         {
             _board.SetBid(bid);
-            await InvokeAll(new RpcResponse { Id = 0, Bid = bid });
+            _board.SetBidPlayer(_active_players[_player_index].GamePlayer);
+            await InvokeAll(new RpcResponse {Id = 0, Bid = bid });
             await NextTurn();
             return true;
         }
         return false;
     }
 
+    public async Task MeetingEnd() {
+        if (_emergencyMeeting.VotesFor.Count + _emergencyMeeting.VotesAgainst.Count < _active_players.Count) {
+            return;
+        }
+
+        // otherwise meeting has ended
+        var meeting_result = _board.CheckBs();
+        UpdatePlayers(meeting_result);
+        await UpdateGame();
+        await UpdateDeck();
+        await NextRound();
+        await NextTurn();
+        _emergencyMeeting.Reset();
+    }
+
     public void UpdatePlayers(bool result) {
         // false == not bs, the bid is valid
         // true == bs, bid is not valid
         if (result) {
-            Penalize(new List<GameLobbyPlayer>() { _players[_player_index]}); // penalize the person that bid
+            Penalize(new List<GamePlayer>() { _players[_player_index].GamePlayer}); // penalize the person that bid
             Reward(_emergencyMeeting.VotesAgainst);
         }
         else {
@@ -202,16 +224,16 @@ public class GameLobby
         }
     }
 
-    public void Penalize(List<GameLobbyPlayer> players) {
+    public void Penalize(List<GamePlayer> players) {
         foreach (var player in players) {
-            player.GamePlayer.IncreaseHandSize();
-            player.GamePlayer.DecreasePoints(_board.GetBidValue());
+            player.IncreaseHandSize();
+            player.DecreasePoints(_board.GetBidValue());
         }
     }
 
-    public void Reward(List<GameLobbyPlayer> players) {
+    public void Reward(List<GamePlayer> players) {
         foreach (var player in players) {
-            player.GamePlayer.IncreasePoints(_board.GetBidValue());
+            player.IncreasePoints(_board.GetBidValue());
         }
     }
 
@@ -236,7 +258,8 @@ public class GameLobby
             _active_players = _players;
             await UpdateDeck();
             await NextRound();
-            await NextTurn();
+            var current_player = _active_players[_player_index];
+            await InvokeAll(new RpcResponse { Id = 0, CurrentPlayer = current_player.Id });
         }
         else if (type == InvokeCtlType.EmergencyMeetingVoteFor)
         {
@@ -244,38 +267,33 @@ public class GameLobby
             {
                 return;
             }
-            _emergencyMeeting.VotesFor.Add(player);
+            _emergencyMeeting.VotesFor.Add(player.GamePlayer);
             await BroadcastMeeting();
+            await MeetingEnd();
         }
         else if (type == InvokeCtlType.EmergencyMeetingVoteAgainst)
         {
             if (!_emergencyMeeting.IsActive)
             {
                 _emergencyMeeting.Start();
+                _emergencyMeeting.VotesFor.Add(_board.GetBidPlayer());
             }
 
-            _emergencyMeeting.VotesAgainst.Add(player);
+            _emergencyMeeting.VotesAgainst.Add(player.GamePlayer);
             await BroadcastMeeting();
-        }
-        else if (type == InvokeCtlType.EmergencyMeetingOver) {
-            // calculate who voted for, and who voted against
-            // set emergency_meeting to inactive _emergencyMeeting.IsActive
-            var meeting_result = _board.CheckBs();
-            UpdatePlayers(meeting_result);
-            await UpdateGame();
-            await UpdateDeck();
-            await NextRound();
+            await MeetingEnd();
         }
     }
 
     public async ValueTask<GameLobbyPlayer> BindPlayer(string name, PlayerChannel channel)
     {
+        var new_id = Guid.NewGuid();
         var player = new GameLobbyPlayer
         {
-            Id = Guid.NewGuid(),
+            Id = new_id,
             Name = name,
             Channel = channel,
-            GamePlayer = _board.AddPlayer(),
+            GamePlayer = _board.AddPlayer(new_id),
             Lobby = this,
         };
         _players.Add(player);

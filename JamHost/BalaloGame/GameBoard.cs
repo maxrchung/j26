@@ -11,6 +11,7 @@ public class GameBoard
 
     public List<Card> _bid = new List<Card>();
     public int _bidValue = 0;
+    public GamePlayer _bidPlayer;
 
     public int RoundNumber { get; private set; } = 0;
 
@@ -26,9 +27,9 @@ public class GameBoard
         }
     }
 
-    public GamePlayer AddPlayer()
+    public GamePlayer AddPlayer(Guid id)
     {
-        var player = new GamePlayer(this);
+        var player = new GamePlayer(this, id);
         _players.Add(player);
         return player;
     }
@@ -45,6 +46,14 @@ public class GameBoard
     public void SetBid(List<Card> bid) {
         _bid = bid;
         _bidValue = CalculateValue(bid);
+    }
+
+    public void SetBidPlayer(GamePlayer player) {
+        _bidPlayer = player;
+    }
+
+    public GamePlayer GetBidPlayer() {
+        return _bidPlayer;
     }
 
     public bool ValidateBid(List<Card> bid) {
