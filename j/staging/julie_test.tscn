@@ -123,6 +123,7 @@ offset_bottom = 120.0
 text = "Players"
 
 [node name="PlayerInfos" type="Node2D" parent="." unique_id=1647946707]
+visible = false
 position = Vector2(18, 127)
 script = ExtResource("3_8y7d7")
 player_info_scene = ExtResource("4_6rarn")
@@ -136,11 +137,11 @@ position = Vector2(266, 291)
 
 [node name="BidButton" type="Button" parent="." unique_id=1883378963]
 visible = false
-offset_left = 521.0
+offset_left = 510.0
 offset_top = 376.0
-offset_right = 647.0
+offset_right = 656.0
 offset_bottom = 412.0
-text = "Submit bid"
+text = "Submit hand"
 
 [node name="EmergencyMeeting" parent="." unique_id=1828152688 instance=ExtResource("7_766oo")]
 position = Vector2(892, 548)

@@ -100,8 +100,10 @@ func _handle_rsp(text: String) -> void:
 			$"../StartButton".visible = false
 			$"../CurrentText".visible = true
 			$"../BidMpregs".visible = true
+			$"../BidMpregs".set_cards([])
 			$"../BidButton".visible = true
 			$"../RoundNumberLabel".visible = true
+			
 			
 		elif event.eventType == "GameOver":
 			$"../EmergencyMeeting".visible = false
