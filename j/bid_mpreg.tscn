@@ -7,8 +7,9 @@ script = ExtResource("1_8s4dk")
 
 [node name="SuitDropdown" type="OptionButton" parent="." unique_id=624918842]
 custom_minimum_size = Vector2(110, 0)
-offset_right = 103.0
-offset_bottom = 31.0
+offset_top = 36.0
+offset_right = 114.0
+offset_bottom = 67.0
 item_count = 5
 popup/item_0/id = 4
 popup/item_1/text = "Spade"
@@ -23,9 +24,8 @@ metadata/_edit_use_anchors_ = true
 
 [node name="NumberDropdown" type="OptionButton" parent="." unique_id=795829847]
 custom_minimum_size = Vector2(114, 0)
-offset_top = 36.0
-offset_right = 113.0
-offset_bottom = 67.0
+offset_right = 114.0
+offset_bottom = 31.0
 item_count = 14
 popup/item_0/id = 13
 popup/item_1/text = "Two"
