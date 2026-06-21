@@ -1,27 +1,26 @@
 [gd_scene format=3 uid="uid://4lycixra0wpo"]
 
 [ext_resource type="PackedScene" uid="uid://deckn0bcnq22x" path="res://objects/PlayingCard.tscn" id="1_ffheu"]
+[ext_resource type="Script" uid="uid://c6baib6hv58yp" path="res://objects/gui/BidView.gd" id="1_swsre"]
 
-[node name="BidView" type="Control" unique_id=1375384170]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1588748334]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="BidView" type="HBoxContainer" unique_id=1375384170]
+theme_override_constants/separation = 10
 alignment = 1
+script = ExtResource("1_swsre")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1476967492]
+[node name="PlayingCard" parent="." unique_id=1546708771 instance=ExtResource("1_ffheu")]
 layout_mode = 2
-alignment = 1
+size_flags_horizontal = 4
+size_flags_vertical = 4
+suit = 3
+value = 5
 
-[node name="PlayingCard" parent="VBoxContainer/HBoxContainer" unique_id=1546708771 instance=ExtResource("1_ffheu")]
+[node name="PlayingCard2" parent="." unique_id=1027724501 instance=ExtResource("1_ffheu")]
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="PlayingCard3" parent="." unique_id=1933764574 instance=ExtResource("1_ffheu")]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4

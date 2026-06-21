@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://cghpwjo0rnnyq"]
 
+[ext_resource type="PackedScene" uid="uid://4lycixra0wpo" path="res://objects/gui/BidView.tscn" id="1_24fj3"]
+
 [node name="MeetingScreen" type="Control" unique_id=1158891409]
 layout_mode = 3
 anchors_preset = 15
@@ -21,7 +23,7 @@ theme_override_font_sizes/font_size = 48
 text = "EMERGENCY MEETING"
 horizontal_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=839253012]
+[node name="ButtonContainer" type="VBoxContainer" parent="." unique_id=839253012]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -32,26 +34,41 @@ grow_horizontal = 2
 grow_vertical = 0
 alignment = 1
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer" unique_id=416620540]
+[node name="HBoxContainer2" type="HBoxContainer" parent="ButtonContainer" unique_id=416620540]
 layout_mode = 2
 alignment = 1
 
-[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/HBoxContainer2" unique_id=1549834912]
+[node name="CenterContainer" type="CenterContainer" parent="ButtonContainer/HBoxContainer2" unique_id=1549834912]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Real" type="Button" parent="VBoxContainer/HBoxContainer2/CenterContainer" unique_id=1235385985]
+[node name="Real" type="Button" parent="ButtonContainer/HBoxContainer2/CenterContainer" unique_id=1235385985]
 layout_mode = 2
 text = "TRVTH NVKE"
 
-[node name="CenterContainer2" type="CenterContainer" parent="VBoxContainer/HBoxContainer2" unique_id=1318082719]
+[node name="CenterContainer2" type="CenterContainer" parent="ButtonContainer/HBoxContainer2" unique_id=1318082719]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Fake" type="Button" parent="VBoxContainer/HBoxContainer2/CenterContainer2" unique_id=796605521]
+[node name="Fake" type="Button" parent="ButtonContainer/HBoxContainer2/CenterContainer2" unique_id=796605521]
 layout_mode = 2
 text = "FLVSE NVKE"
 
-[node name="Control" type="Control" parent="VBoxContainer" unique_id=1070531577]
+[node name="Control" type="Control" parent="ButtonContainer" unique_id=1070531577]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
+
+[node name="BidContainer" type="VBoxContainer" parent="." unique_id=648190837]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -87.5
+offset_bottom = 87.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BidView" parent="BidContainer" unique_id=1375384170 instance=ExtResource("1_24fj3")]
+layout_mode = 2
+theme_override_constants/separation = 10
