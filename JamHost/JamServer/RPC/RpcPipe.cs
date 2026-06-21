@@ -61,12 +61,17 @@ public class RpcPipe
                 rsp.Error = "unknown info type";
             }
         }
-        else if (req.Bid != null) {
+        else if (req.Bid != null)
+        {
             rsp.Ok = await _server.AcceptBidAsync(req.Bid.Cards);
         }
         else if (req.InvokeCtl.HasValue)
         {
             rsp.Ok = await _server.InvokeCtlAsync(req.InvokeCtl.Value);
+        }
+        else if (req.TestRequest != null)
+        {
+            rsp.Ok = new OkResponse { Message = req.TestRequest.Message };
         }
         else
         {

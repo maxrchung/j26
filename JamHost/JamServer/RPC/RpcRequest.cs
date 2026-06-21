@@ -29,6 +29,11 @@ public record BidRequest
     public required List<Dictionary<string, string>> Cards { get; init; }
 }
 
+public record TestRequest
+{
+    public required string Message { get; init; }
+}
+
 public class RpcRequest
 {
     public required int Id { get; init; }
@@ -37,4 +42,6 @@ public class RpcRequest
     public InvokeCtlType? InvokeCtl { get; init; }
     public JoinRequest? Join { get; init; }
     public BidRequest? Bid { get; init; }
+
+    public TestRequest? TestRequest {get; init; }
 }

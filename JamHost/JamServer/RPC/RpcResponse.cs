@@ -58,13 +58,22 @@ public record EmergencyMeetingInfo
 }
 
 public record RoundInfo {
-    public required bool RoundNumber { get; init; }
+    public required int RoundNumber { get; init; }
     public required LobbyPlayer ActivePlayer { get; init; }
 }
 
-public record GameState {
-    public required RoundInfo CurrentRound { get; init; }
-    public 
+public record GameStateUpdateEvent {
+
+    public enum Type
+    {
+        RoundStart,
+        GameOver,
+    }
+    public required Type EventType { get; init; }
+    public int? MaxRounds { get; init; }
+    public RoundInfo? CurrentRound { get; init; }
+    public IReadOnlyList<LobbyPlayer>? ActivePlayers { get; init; }
+
 }
 
 public record RpcResponse
@@ -87,7 +96,11 @@ public record RpcResponse
 
     public EmergencyMeetingInfo? EmergencyMeeting { get; set; }
 
+<<<<<<< HEAD
     public IReadOnlyList<Card>? Bid { get; set; }
+=======
+    public GameStateUpdateEvent? GameStateUpdateEvent { get; set; }
+>>>>>>> 43b2ea5 (server sends gamestateupdateevent so u know what ROUND u are)
 
     public string? Error { get; set; }
 }
