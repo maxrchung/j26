@@ -2,6 +2,8 @@ extends Sprite2D
 
 class_name Card
 
+static var CARD_SCENE = preload("res://card.tscn")
+
 ## `true` if card is facing you, `false` if facing away
 @export var is_front = false
 
@@ -11,6 +13,22 @@ class_name Card
 ## Number values match themselves, JQKA are 11, 12, 13, 14
 @export var number = 2
 
+## Width of card in pixels
+static var width = 250
+
+## Static factory
+static func make_card(_is_front=false, _suit='none', _number='2') -> Node2D:
+	var cardInst = CARD_SCENE.instantiate()
+	cardInst.is_front = _is_front
+	cardInst.suit = _suit
+	cardInst.number = _number
+	return cardInst
+
+func _init(_is_front=false, _suit='none', _number='2') -> void:
+	is_front = _is_front
+	suit = _suit
+	number = _number
+	
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	# Index

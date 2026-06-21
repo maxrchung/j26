@@ -12,7 +12,7 @@ point_count = 3
 [node name="Game" type="Node2D" unique_id=405032809 node_paths=PackedStringArray("spawn_path")]
 script = ExtResource("1_ibkli")
 spawn_path = NodePath("SpawnPath")
-NUM_PLAYERS = 4
+NUM_PLAYERS = 7
 
 [node name="SpawnPath" type="Path2D" parent="." unique_id=532965899]
 position = Vector2(87.99999, -697.99994)

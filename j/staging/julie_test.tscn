@@ -159,6 +159,13 @@ offset_bottom = 364.0
 text = "Submit bid"
 
 [connection signal="pressed" from="LobbyStuff/ConnectButton" to="PlayerController" method="_on_connect_button_pressed"]
+[node name="RoundNumberLabel" type="Label" parent="." unique_id=495663999]
+offset_left = 766.0
+offset_top = 244.0
+offset_right = 894.0
+offset_bottom = 267.0
+text = "Round Number: "
+
 [connection signal="pressed" from="SendJsonButton" to="PlayerController" method="_on_send_json_button_pressed"]
 [connection signal="pressed" from="StartButton" to="PlayerController" method="_on_start_button_pressed"]
 [connection signal="pressed" from="EmergencyMeetingButton" to="PlayerController" method="_on_emergency_meeting_button_pressed"]

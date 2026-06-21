@@ -83,6 +83,8 @@ func _handle_rsp(text: String) -> void:
 		for playerHand in playerHands:
 			if myPlayerId == playerHand.id:
 				$"../Hand".update_cards(playerHand.cards)
+	if "gameStateUpdateEvent" in d:
+		$"../RoundNumberLabel".text = "Round Number: %d" % str(d.gameStateUpdateEvent.currentRound.roundNumber)
 				
 	if "currentPlayer" in d:
 		currentPlayer = d.currentPlayer

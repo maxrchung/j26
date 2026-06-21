@@ -111,11 +111,36 @@ public class GameLobby
             player.Channel.Send(new RpcResponse { Id = 0, PlayerHands = HandInfoFor(player) })).ToList());
     }
 
+    // dupe some logic for BACK COMPAT 
+    private async Task UpdateGameState()
+    {
+        var response = new RpcResponse
+        {
+            Id = 0,
+            GameStateUpdateEvent = new GameStateUpdateEvent
+            {
+                EventType = GameStateUpdateEvent.Type.RoundStart,
+                CurrentRound = CreateCurrentRoundInfo()
+            }
+        };
+        await Task.WhenAll(_players.Select(player => player.Channel.Send(response)).ToList());
+    }
+
+    public RoundInfo CreateCurrentRoundInfo()
+    {
+        return new RoundInfo
+        {
+            RoundNumber = _board.RoundNumber,
+            ActivePlayer = LobbyPlayer.From(_players[0]) // TODO replace with actual active player
+        };
+    }
+
     public async Task NextRound()
     {
         _board.NextRound();
         _round_count += 1;
-        await UpdateHands();
+        await UpdateHands(); // TODO remove dupe call
+        await UpdateGameState();
     }
 
     public async Task NextTurn() {
@@ -127,7 +152,8 @@ public class GameLobby
 
     public async Task<bool> ValidateBid(List<Dictionary<string, string>> raw_bid) {
         var bid = new List<Card>();
-        foreach (Dictionary<string, string> raw_card in raw_bid) {
+        foreach (Dictionary<string, string> raw_card in raw_bid)
+        {
             foreach (var (suit, value) in raw_card)
             {
                 Enum.TryParse<CardSuit>(suit, true, out CardSuit card_suit);
@@ -136,7 +162,8 @@ public class GameLobby
                 bid.Add(new_card);
             }
         }
-        if (_board.ValidateBid(bid)) {
+        if (_board.ValidateBid(bid))
+        {
             _board.SetBid(bid);
             await InvokeAll(new RpcResponse { Id = 0, Bid = bid });
             await NextTurn();

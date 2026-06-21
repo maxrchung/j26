@@ -57,6 +57,27 @@ public record EmergencyMeetingInfo
     public required IReadOnlyList<Guid> VotesAgainst { get; init; } = [];
 }
 
+public record RoundInfo
+{
+    public required int RoundNumber { get; init; }
+    public required LobbyPlayer ActivePlayer { get; init; }
+}
+
+public record GameStateUpdateEvent
+{
+
+    public enum Type
+    {
+        RoundStart,
+        GameOver,
+    }
+    public required Type EventType { get; init; }
+    public int? MaxRounds { get; init; }
+    public RoundInfo? CurrentRound { get; init; }
+    public IReadOnlyList<LobbyPlayer>? ActivePlayers { get; init; }
+
+}
+
 public record RpcResponse
 {
     public required int Id { get; init; }
@@ -78,6 +99,7 @@ public record RpcResponse
     public EmergencyMeetingInfo? EmergencyMeeting { get; set; }
 
     public IReadOnlyList<Card>? Bid { get; set; }
+    public GameStateUpdateEvent? GameStateUpdateEvent { get; set; }
 
     public string? Error { get; set; }
 }
