@@ -12,9 +12,9 @@
 
 [node name="TitleLabel" type="Label" parent="." unique_id=1091938030]
 offset_left = 567.0
-offset_top = 12.0
+offset_top = 25.0
 offset_right = 591.0
-offset_bottom = 33.0
+offset_bottom = 46.0
 text = "bs"
 
 [node name="Table" type="Sprite2D" parent="." unique_id=1219413131]
@@ -31,9 +31,9 @@ lobbyList = NodePath("../LobbyStuff/ItemList")
 
 [node name="LineEdit" type="LineEdit" parent="LobbyStuff" unique_id=437873862]
 offset_left = 335.0
-offset_top = 532.0
+offset_top = 572.0
 offset_right = 605.0
-offset_bottom = 570.0
+offset_bottom = 610.0
 placeholder_text = "Name"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="LobbyStuff" unique_id=1498088175]
@@ -44,9 +44,9 @@ offset_bottom = 255.0
 
 [node name="Button" type="Button" parent="LobbyStuff" unique_id=1572874277]
 offset_left = 620.0
-offset_top = 532.0
+offset_top = 572.0
 offset_right = 692.0
-offset_bottom = 570.0
+offset_bottom = 610.0
 text = "Join"
 
 [node name="Button" type="Button" parent="LobbyStuff/Button" unique_id=331745891]
@@ -58,23 +58,23 @@ text = "Create"
 
 [node name="ItemList" type="ItemList" parent="LobbyStuff" unique_id=810656343]
 offset_left = 335.0
-offset_top = 356.0
+offset_top = 396.0
 offset_right = 800.0
-offset_bottom = 511.0
+offset_bottom = 551.0
 auto_width = true
 
 [node name="ConnectButton" type="Button" parent="LobbyStuff" unique_id=1155131296]
 offset_left = 605.0
-offset_top = 287.0
+offset_top = 327.0
 offset_right = 716.0
-offset_bottom = 325.0
+offset_bottom = 365.0
 text = "Connect"
 
 [node name="ConnectText" type="TextEdit" parent="LobbyStuff" unique_id=332784921]
 offset_left = 405.0
-offset_top = 288.0
+offset_top = 328.0
 offset_right = 591.0
-offset_bottom = 325.0
+offset_bottom = 365.0
 text = "localhost"
 placeholder_text = "localhost"
 
@@ -133,7 +133,7 @@ text = "Submit bid"
 
 [node name="EmergencyMeeting" parent="." unique_id=1828152688 instance=ExtResource("7_766oo")]
 visible = false
-position = Vector2(9, 570)
+position = Vector2(918, 570)
 
 [connection signal="pressed" from="LobbyStuff/ConnectButton" to="PlayerController" method="_on_connect_button_pressed"]
 [connection signal="pressed" from="StartButton" to="PlayerController" method="_on_start_button_pressed"]
