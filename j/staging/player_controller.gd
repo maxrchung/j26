@@ -54,6 +54,8 @@ func _do_join() -> void:
 	
 	$"../BidMpregs".visible = true
 	$"../BidButton".visible = true
+	
+	$"../RoundNumberLabel".visible = true
 
 func _handle_rsp(text: String) -> void:
 	var err = json.parse(text)
@@ -84,7 +86,7 @@ func _handle_rsp(text: String) -> void:
 			if myPlayerId == playerHand.id:
 				$"../Hand".update_cards(playerHand.cards)
 	if "gameStateUpdateEvent" in d:
-		$"../RoundNumberLabel".text = "Round Number: %d" % str(d.gameStateUpdateEvent.currentRound.roundNumber)
+		$"../RoundNumberLabel".text = "Round Number: " + str(d.gameStateUpdateEvent.currentRound.roundNumber)
 				
 	if "currentPlayer" in d:
 		currentPlayer = d.currentPlayer
@@ -93,13 +95,8 @@ func _handle_rsp(text: String) -> void:
 		
 		if currentPlayer == myPlayerId:
 			$"../BidButton".visible = true
-			$"../EmergencyMeetingButton".visible = false
 		else:
 			$"../BidButton".visible = false
-			$"../EmergencyMeetingButton".visible = true
-
-		$"../VoteForButton".visible = false
-		$"../VoteAgainstButton".visible = false
 		
 	if "bid" in d:
 		var bid = d.bid

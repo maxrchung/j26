@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://erf1mvugrkjm"]
+
+[ext_resource type="Script" uid="uid://cxworxortpvri" path="res://emergency_meeting.gd" id="1_ybcmp"]
+
+[node name="EmergencyMeeting" type="Node2D" unique_id=1828152688]
+script = ExtResource("1_ybcmp")
+
+[node name="NotBsLabel" type="Label" parent="." unique_id=469924403]
+offset_top = 23.0
+offset_right = 67.0
+offset_bottom = 46.0
+text = "NOT BS: "
+
+[node name="BsLabel" type="Label" parent="." unique_id=1194557584]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "BS: "
