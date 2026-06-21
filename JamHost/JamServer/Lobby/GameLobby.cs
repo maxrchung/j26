@@ -25,8 +25,7 @@ public record EmergencyMeetingState
         VotesAgainst.Clear();
     }
 
-    public void Reset()
-    {
+    public void Reset() {
         IsActive = false;
         VotesFor.Clear();
         VotesAgainst.Clear();
@@ -48,8 +47,8 @@ public class GameLobby
     private readonly GameBoard _board = new();
 
     private readonly List<GameLobbyPlayer> _players = new();
-    private List<GameLobbyPlayer> _active_players = new();
-    private List<GameLobbyPlayer> _inactive_players = new();
+    private List<GameLobbyPlayer> _active_players = new ();
+    private List<GameLobbyPlayer> _inactive_players = new ();
     private int _player_index = 0;
 
     public readonly string Name;
@@ -122,77 +121,65 @@ public class GameLobby
     // dupe some logic for BACK COMPAT 
     private async Task UpdateGameState(GameStateUpdateEvent.Type eventType)
     {
-        var sendTasks = _players.Select(player =>
-        player.Channel.Send(new RpcResponse
-        {
-            Id = 0,
-            GameStateUpdateEvent = GameStateUpdateEventFor(player, eventType)
-        }));
-
-        await Task.WhenAll(sendTasks);
+        if (eventType == GameStateUpdateEvent.Type.RoundStart) {
+            var response = new RpcResponse
+            {
+                Id = 0,
+                GameStateUpdateEvent = new GameStateUpdateEvent
+                {
+                    EventType = GameStateUpdateEvent.Type.RoundStart,
+                    CurrentRound = CreateCurrentRoundInfo()
+                }
+            };
+            await Task.WhenAll(_players.Select(player => player.Channel.Send(response)).ToList());
+        } else {
+            var winner = CalculateWinner(_active_players);
+            var response = new RpcResponse
+            {
+                Id = 0,
+                GameStateUpdateEvent = new GameStateUpdateEvent
+                {
+                    EventType = GameStateUpdateEvent.Type.GameOver,
+                    Winner = winner,
+                    CurrentRound = CreateCurrentRoundInfo()
+                }
+            };
+            await Task.WhenAll(_players.Select(player => player.Channel.Send(response)).ToList());
+        }
     }
 
-
-    private GameStateUpdateEvent GameStateUpdateEventFor(GameLobbyPlayer player, GameStateUpdateEvent.Type eventType)
+    public RoundInfo CreateCurrentRoundInfo()
     {
-        return eventType switch
+        return new RoundInfo
         {
-            GameStateUpdateEvent.Type.RoundStart =>
-                new()
-                {
-                    EventType = eventType,
-                    CurrentRound = new()
-                    {
-                        RoundNumber = _board.RoundNumber,
-                        ActivePlayer = LobbyPlayer.From(_players[0]), // TODO replace with actual active player
-                        PlayerHands = HandInfoFor(player)
-                    }
-                },
-            GameStateUpdateEvent.Type.GameOver =>
-                new()
-                {
-                    EventType = eventType,
-                    Winner = CalculateWinner(_players),
-                    CurrentRound = new()
-                    {
-                        RoundNumber = _board.RoundNumber,
-                        ActivePlayer = LobbyPlayer.From(_players[0]), // TODO replace with actual active player
-                        PlayerHands = HandInfoFor(player)
-                    }
-                },
-            _ => throw new ArgumentException("Invalid GameStateUpdateEvent.Type")
+            RoundNumber = _board.RoundNumber,
+            ActivePlayer = LobbyPlayer.From(_players[0]) // TODO replace with actual active player
         };
     }
 
     public async Task NextRound()
     {
         _board.NextRound();
-        if (_board.RoundNumber > MAX_ROUNDS)
-        {
+        if (_board.RoundNumber > MAX_ROUNDS) {
             await UpdateGameState(GameStateUpdateEvent.Type.GameOver);
-        }
-        else
-        {
+        } else {
             await UpdateHands(); // TODO remove dupe call
             await UpdateGameState(GameStateUpdateEvent.Type.RoundStart);
         }
     }
 
-    public async Task NextTurn()
-    {
+    public async Task NextTurn() {
+        _player_index += 1;
+        _player_index = _player_index % _active_players.Count;
         var current_player = _active_players[_player_index];
-        if (_board.GetBidPlayer() is null)
-        {
+        if (_board.GetBidPlayer() is null) {
             await InvokeAll(new RpcResponse { Id = 0, CurrentPlayer = current_player.Id });
-        }
-        else
-        {
+        } else {
             await InvokeAll(new RpcResponse { Id = 0, CurrentPlayer = current_player.Id, BidPlayer = _board.GetBidPlayer().Id });
         }
     }
 
-    public async Task<bool> ValidateBid(List<Dictionary<string, string>> raw_bid)
-    {
+    public async Task<bool> ValidateBid(List<Dictionary<string, string>> raw_bid) {
         var bid = new List<Card>();
         foreach (Dictionary<string, string> raw_card in raw_bid)
         {
@@ -208,17 +195,15 @@ public class GameLobby
         {
             _board.SetBid(bid);
             _board.SetBidPlayer(_active_players[_player_index].GamePlayer);
-            await InvokeAll(new RpcResponse { Id = 0, Bid = bid });
+            await InvokeAll(new RpcResponse {Id = 0, Bid = bid });
             await NextTurn();
             return true;
         }
         return false;
     }
 
-    public async Task MeetingEnd()
-    {
-        if (_emergencyMeeting.VotesFor.Count + _emergencyMeeting.VotesAgainst.Count < _active_players.Count)
-        {
+    public async Task MeetingEnd() {
+        if (_emergencyMeeting.VotesFor.Count + _emergencyMeeting.VotesAgainst.Count < _active_players.Count) {
             return;
         }
 
@@ -232,70 +217,55 @@ public class GameLobby
         _emergencyMeeting.Reset();
     }
 
-    public void UpdatePlayers(bool result)
-    {
+    public void UpdatePlayers(bool result) {
         // false == not bs, the bid is valid
         // true == bs, bid is not valid
-        if (result)
-        {
-            Penalize(new List<GamePlayer>() { _players[_player_index].GamePlayer }); // penalize the person that bid
+        if (result) {
+            Penalize(new List<GamePlayer>() { _players[_player_index].GamePlayer}); // penalize the person that bid
             Reward(_emergencyMeeting.VotesAgainst);
         }
-        else
-        {
+        else {
             Penalize(_emergencyMeeting.VotesAgainst);
             Reward(_emergencyMeeting.VotesFor);
         }
     }
 
-    public async Task UpdateGame()
-    {
+    public async Task UpdateGame() {
         var new_inactive_players = new List<GameLobbyPlayer>();
-        foreach (var player in _active_players)
-        {
-            if (player.GamePlayer.Score >= SCORE_LIMIT)
-            {
+        foreach (var player in _active_players) {
+            if (player.GamePlayer.Score >= SCORE_LIMIT) {
                 await UpdateGameState(GameStateUpdateEvent.Type.GameOver);
             }
-            if (player.GamePlayer.HandSize >= HAND_LIMIT)
-            {
+            if (player.GamePlayer.HandSize >= HAND_LIMIT) {
                 new_inactive_players.Add(player);
             }
         }
 
-        foreach (var inactive_player in new_inactive_players)
-        {
+        foreach (var inactive_player in new_inactive_players) {
             _inactive_players.Add(inactive_player);
             _active_players.Remove(inactive_player);
         }
     }
 
-    public void Penalize(List<GamePlayer> players)
-    {
-        foreach (var player in players)
-        {
+    public void Penalize(List<GamePlayer> players) {
+        foreach (var player in players) {
             player.IncreaseHandSize();
             player.DecreasePoints(_board.GetBidValue());
         }
     }
 
-    public void Reward(List<GamePlayer> players)
-    {
-        foreach (var player in players)
-        {
+    public void Reward(List<GamePlayer> players) {
+        foreach (var player in players) {
             player.IncreasePoints(_board.GetBidValue());
         }
     }
 
-    public Guid CalculateWinner(List<GameLobbyPlayer> players)
-    {
+    public Guid CalculateWinner(List<GameLobbyPlayer> players) {
         var maxScore = double.NegativeInfinity;
         var winningGuid = new Guid();
-        foreach (var player in players)
-        {
+        foreach (var player in players) {
             var score = player.GamePlayer.GetScore();
-            if (score > maxScore)
-            {
+            if (score > maxScore) {
                 winningGuid = player.Id;
                 maxScore = score;
             }

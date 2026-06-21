@@ -143,8 +143,7 @@ offset_bottom = 412.0
 text = "Submit bid"
 
 [node name="EmergencyMeeting" parent="." unique_id=1828152688 instance=ExtResource("7_766oo")]
-visible = false
-position = Vector2(918, 570)
+position = Vector2(892, 548)
 
 [node name="QuitButton" type="Button" parent="." unique_id=763266404]
 visible = false
