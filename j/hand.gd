@@ -2,15 +2,25 @@ extends Node2D
 
 @export var card_scene: PackedScene
 
+var is_shown = true
+var new_cards = []
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass
+	$ShowButton.z_index = 999
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
 
+func force_show():
+	is_shown = true
+	$ShowButton.text = "Hide"
+	update_cards(new_cards)
+
 func update_cards(cards):
+	new_cards = cards
+	
 	# Remove old
 	for child in get_children():
 		if child is PlayingCard:
@@ -69,8 +79,13 @@ func update_cards(cards):
 		card.number = number
 		card.position = Vector2(
 			left + i * 50,
-			screen_size.y
+			screen_size.y + 50
 		)
+		if is_shown:
+			card.face_up = true
+		else:
+			card.face_up = false
+		
 		add_child(card)
 		
 
@@ -95,3 +110,14 @@ func randomize_cards():
 		}
 		
 	update_cards(cards)
+
+
+func _on_button_pressed() -> void:
+	if is_shown:
+		is_shown = false
+		$ShowButton.text = "Show"
+		update_cards(new_cards)
+	else:
+		is_shown = true
+		$ShowButton.text = "Hide"
+		update_cards(new_cards)

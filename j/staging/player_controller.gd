@@ -97,6 +97,7 @@ func _handle_rsp(text: String) -> void:
 			$"../EmergencyMeeting".reset()
 			
 			$"../Hand".visible = true
+			$"../Hand".force_show()
 			$"../StartButton".visible = false
 			$"../CurrentText".visible = true
 			$"../BidMpregs".visible = true

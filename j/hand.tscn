@@ -15,4 +15,19 @@ offset_right = 113.0
 offset_bottom = 43.0
 text = "Randomize"
 
+[node name="ShowButton" type="Button" parent="." unique_id=332292316]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 561.0
+offset_top = 605.0
+offset_right = 609.0
+offset_bottom = 634.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Hide"
+
 [connection signal="pressed" from="RandomizeButton" to="." method="randomize_cards"]
+[connection signal="pressed" from="ShowButton" to="." method="_on_button_pressed"]
