@@ -29,9 +29,6 @@ var playerHands
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	if OS.is_debug_build():
-		$"../LobbyStuff/ConnectText".text = "localhost"
-	
 	joinButton.pressed.connect(_do_join)
 	$"../EmergencyMeeting".emergency.connect(_on_emergency_meeting_button_pressed)
 	$"../EmergencyMeeting".vote_no_bs.connect(_on_vote_for_button_pressed)
@@ -41,8 +38,12 @@ func _on_connect_button_pressed() -> void:
 	socket.close()
 	socket = WebSocketPeer.new()
 	generic_click.play()
-	var host = $"../LobbyStuff/ConnectText".text
-	socket.connect_to_url("ws://" + host + ":5092/api/v1/game/socket")
+	
+	if OS.is_debug_build():
+		socket.connect_to_url("ws://localhost:5092/api/v1/game/socket")
+	else:
+		socket.connect_to_url("wss://bsq.up.railway.app/api/v1/game/socket")
+	
 	clientState = ClientState.Connecting
 	
 	lobbyList.clear()
@@ -122,7 +123,7 @@ func _handle_rsp(text: String) -> void:
 			var winnerId = event.winner
 			var winnerName = winnerId
 			for playerHand in playerHands:
-				if currentPlayer == playerHand.id:
+				if winnerId == playerHand.id:
 					winnerName = playerHand.name
 					break
 			$"../WinnerLabel".text = "Winner: " + winnerName

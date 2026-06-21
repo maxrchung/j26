@@ -72,13 +72,14 @@ offset_bottom = 531.0
 auto_width = true
 
 [node name="ConnectButton" type="Button" parent="LobbyStuff" unique_id=1155131296]
-offset_left = 605.0
-offset_top = 307.0
-offset_right = 716.0
-offset_bottom = 345.0
+offset_left = 519.0
+offset_top = 313.0
+offset_right = 630.0
+offset_bottom = 351.0
 text = "Connect"
 
 [node name="ConnectText" type="TextEdit" parent="LobbyStuff" unique_id=332784921]
+visible = false
 offset_left = 405.0
 offset_top = 308.0
 offset_right = 591.0
