@@ -48,6 +48,7 @@ public record PlayerHandInfo
     public required Guid Id { get; init; }
     public required int CardCount { get; init; }
     public IReadOnlyList<CardInfo>? Cards { get; init; }
+    public required string Name { get; init; }
 }
 
 public record EmergencyMeetingInfo

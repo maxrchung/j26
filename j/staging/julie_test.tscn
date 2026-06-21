@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://bcqs1n284i0kq"]
 
+[ext_resource type="Texture2D" uid="uid://ckla2viltl287" path="res://mj/table.png" id="1_766oo"]
 [ext_resource type="Script" uid="uid://cod47o4arki83" path="res://staging/player_controller.gd" id="1_ru61t"]
 [ext_resource type="Script" uid="uid://bbeffmus5r6m1" path="res://staging/player_infos.gd" id="3_8y7d7"]
 [ext_resource type="PackedScene" uid="uid://dx6kxaydpudjl" path="res://player_info.tscn" id="4_6rarn"]
@@ -8,6 +9,17 @@
 [ext_resource type="PackedScene" uid="uid://erf1mvugrkjm" path="res://emergency_meeting.tscn" id="7_766oo"]
 
 [node name="Node2D" type="Node2D" unique_id=866605961]
+
+[node name="TitleLabel" type="Label" parent="." unique_id=1091938030]
+offset_left = 567.0
+offset_top = 12.0
+offset_right = 591.0
+offset_bottom = 33.0
+text = "bs"
+
+[node name="Table" type="Sprite2D" parent="." unique_id=1219413131]
+position = Vector2(575, 322)
+texture = ExtResource("1_766oo")
 
 [node name="PlayerController" type="Node" parent="." unique_id=1044269277 node_paths=PackedStringArray("nameField", "joinButton", "lobbyList")]
 script = ExtResource("1_ru61t")
@@ -18,10 +30,10 @@ lobbyList = NodePath("../LobbyStuff/ItemList")
 [node name="LobbyStuff" type="Node2D" parent="." unique_id=2135225762]
 
 [node name="LineEdit" type="LineEdit" parent="LobbyStuff" unique_id=437873862]
-offset_left = 9.0
-offset_top = 249.0
-offset_right = 145.0
-offset_bottom = 287.0
+offset_left = 335.0
+offset_top = 532.0
+offset_right = 605.0
+offset_bottom = 570.0
 placeholder_text = "Name"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="LobbyStuff" unique_id=1498088175]
@@ -31,10 +43,10 @@ offset_right = 386.0
 offset_bottom = 255.0
 
 [node name="Button" type="Button" parent="LobbyStuff" unique_id=1572874277]
-offset_left = 159.0
-offset_top = 249.0
-offset_right = 231.0
-offset_bottom = 287.0
+offset_left = 620.0
+offset_top = 532.0
+offset_right = 692.0
+offset_bottom = 570.0
 text = "Join"
 
 [node name="Button" type="Button" parent="LobbyStuff/Button" unique_id=331745891]
@@ -45,24 +57,24 @@ offset_bottom = 38.0
 text = "Create"
 
 [node name="ItemList" type="ItemList" parent="LobbyStuff" unique_id=810656343]
-offset_left = 9.0
-offset_top = 73.0
-offset_right = 474.0
-offset_bottom = 228.0
+offset_left = 335.0
+offset_top = 356.0
+offset_right = 800.0
+offset_bottom = 511.0
 auto_width = true
 
 [node name="ConnectButton" type="Button" parent="LobbyStuff" unique_id=1155131296]
-offset_left = 209.0
-offset_top = 12.0
-offset_right = 320.0
-offset_bottom = 50.0
+offset_left = 605.0
+offset_top = 287.0
+offset_right = 716.0
+offset_bottom = 325.0
 text = "Connect"
 
 [node name="ConnectText" type="TextEdit" parent="LobbyStuff" unique_id=332784921]
-offset_left = 9.0
-offset_top = 13.0
-offset_right = 195.0
-offset_bottom = 50.0
+offset_left = 405.0
+offset_top = 288.0
+offset_right = 591.0
+offset_bottom = 325.0
 text = "localhost"
 placeholder_text = "localhost"
 
@@ -74,41 +86,33 @@ offset_right = 1149.0
 offset_bottom = 35.0
 text = "Rounds left:"
 
-[node name="LobbyIdText" type="Label" parent="." unique_id=1002534460]
-visible = false
-offset_left = 9.0
-offset_top = 12.0
-offset_right = 61.0
-offset_bottom = 35.0
-text = "Lobby:"
-
-[node name="PlayerIdText" type="Label" parent="." unique_id=1173182417]
-visible = false
-offset_left = 9.0
-offset_top = 35.0
-offset_right = 62.0
-offset_bottom = 58.0
-text = "Player:"
-
 [node name="StartButton" type="Button" parent="." unique_id=1283160164]
 visible = false
 offset_left = 9.0
-offset_top = 67.0
+offset_top = 12.0
 offset_right = 145.0
-offset_bottom = 104.0
+offset_bottom = 49.0
 text = "START GAME"
 
 [node name="CurrentText" type="Label" parent="." unique_id=1332419141]
 visible = false
 offset_left = 9.0
-offset_top = 75.0
+offset_top = 20.0
 offset_right = 175.0
-offset_bottom = 98.0
+offset_bottom = 43.0
 text = "Current player:"
+
+[node name="PlayersLabel" type="Label" parent="." unique_id=1112945769]
+visible = false
+offset_left = 9.0
+offset_top = 76.0
+offset_right = 91.0
+offset_bottom = 97.0
+text = "Players"
 
 [node name="PlayerInfos" type="Node2D" parent="." unique_id=1647946707]
 visible = false
-position = Vector2(9, 120)
+position = Vector2(34, 104)
 script = ExtResource("3_8y7d7")
 player_info_scene = ExtResource("4_6rarn")
 

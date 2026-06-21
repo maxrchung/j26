@@ -103,7 +103,8 @@ public class GameLobby
             CardCount = x.GamePlayer.HandSize,
             Cards = ShouldRevealHandTo(player, x)
                 ? x.GamePlayer.HandCards.Select(CardInfo.From).ToList()
-                : null
+                : null,
+            Name = x.Name
         }).ToList();
     }
 

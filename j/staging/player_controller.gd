@@ -49,8 +49,7 @@ func _do_join() -> void:
 	_invoke("join", {"lobbyId": lobbyId, "playerName": name})
 	$"../LobbyStuff".visible = false
 	
-	$"../LobbyIdText".visible = true
-	$"../PlayerIdText".visible = true
+	$"../PlayersLabel".visible = true
 	$"../PlayerInfos".visible = true
 	$"../StartButton".visible = true
 
@@ -89,11 +88,20 @@ func _handle_rsp(text: String) -> void:
 			
 	if "lobbyChange" in d:
 		myLobbyId = d.lobbyChange.id
-		$"../LobbyIdText".text = "Lobby: " + myLobbyId
+		var players = d.lobbyChange.players
+		
+		playerHands = []
+		for player in players:
+			playerHands.append({
+				"id": player.id,
+				"name": player.name,
+				"cardCount": 0,
+				"cards": []
+			})	
+		$"../PlayerInfos".update_players(playerHands, myPlayerId)
 		
 	if "localIdChange" in d:
 		myPlayerId = d.localIdChange
-		$"../PlayerIdText".text = "Player: " + myPlayerId
 		
 	if "playerHands" in d:
 		playerHands = d.playerHands
@@ -102,6 +110,7 @@ func _handle_rsp(text: String) -> void:
 		for playerHand in playerHands:
 			if myPlayerId == playerHand.id:
 				$"../Hand".update_cards(playerHand.cards)
+				
 	if "gameStateUpdateEvent" in d:
 		$"../RoundNumberLabel".text = "Rounds left: " + str(int(7 - d.gameStateUpdateEvent.currentRound.roundNumber))
 				

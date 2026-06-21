@@ -21,9 +21,9 @@ func update_players(player_hands, my_player_id):
 		var player_info = player_info_scene.instantiate()
 		
 		if player_hand.id == my_player_id:
-			player_info.player_name = '(You) ' + player_hand.id
+			player_info.player_name = player_hand.name + ' (You)'
 		else:
-			player_info.player_name = player_hand.id
+			player_info.player_name = player_hand.name
 		player_info.card_count = player_hand.cardCount
-		player_info.position = Vector2(0, i * 50)
+		player_info.position = Vector2(0, i * 60)
 		add_child(player_info)
