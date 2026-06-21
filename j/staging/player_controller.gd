@@ -52,14 +52,9 @@ func _do_join() -> void:
 	$"../LobbyIdText".visible = true
 	$"../PlayerIdText".visible = true
 	$"../PlayerInfos".visible = true
-	$"../Hand".visible = true
 	$"../StartButton".visible = true
-	$"../CurrentText".visible = true
+
 	
-	$"../BidMpregs".visible = true
-	$"../BidButton".visible = true
-	
-	$"../RoundNumberLabel".visible = true
 
 func _handle_rsp(text: String) -> void:
 	var err = json.parse(text)
@@ -75,6 +70,14 @@ func _handle_rsp(text: String) -> void:
 			bidPlayer = null
 			currentPlayer = null
 			$"../EmergencyMeeting".reset()
+			
+			$"../Hand".visible = true
+			$"../StartButton".visible = false
+			$"../CurrentText".visible = true
+			$"../BidMpregs".visible = true
+			$"../BidButton".visible = true
+			$"../RoundNumberLabel".visible = true
+			
 		elif event.eventType == "GameOver":
 			print("GAME OVER")
 	
@@ -100,12 +103,12 @@ func _handle_rsp(text: String) -> void:
 			if myPlayerId == playerHand.id:
 				$"../Hand".update_cards(playerHand.cards)
 	if "gameStateUpdateEvent" in d:
-		$"../RoundNumberLabel".text = "Round Number: " + str(d.gameStateUpdateEvent.currentRound.roundNumber)
+		$"../RoundNumberLabel".text = "Rounds left: " + str(int(7 - d.gameStateUpdateEvent.currentRound.roundNumber))
 				
 	if "currentPlayer" in d:
 		currentPlayer = d.currentPlayer
 		
-		$"../CurrentText".text = "Current: " + currentPlayer
+		$"../CurrentText".text = "Current player: " + currentPlayer
 		
 		if currentPlayer == myPlayerId:
 			$"../BidButton".visible = true
@@ -157,7 +160,7 @@ func _on_send_json_button_pressed() -> void:
 
 func _on_start_button_pressed() -> void:
 	_invoke("invokeCtl", "StartGame")
-
+	
 
 func _on_emergency_meeting_button_pressed() -> void:
 	_invoke("invokeCtl", "EmergencyMeetingVoteAgainst")

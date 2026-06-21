@@ -59,7 +59,7 @@ public class GameLobby
 
     public const int HAND_LIMIT = 6;
     public const int SCORE_LIMIT = 50;
-    public const int MAX_ROUNDS = 3;
+    public const int MAX_ROUNDS = 6;
 
 
     public GameLobby(string name, Guid id)
