@@ -29,10 +29,12 @@ public record EmergencyMeetingState
         IsActive = false;
         VotesFor.Clear();
         VotesAgainst.Clear();
+        MeetingCaller = null;
     }
 
     public List<GamePlayer> VotesFor { get; init; } = [];
     public List<GamePlayer> VotesAgainst { get; init; } = [];
+    public GamePlayer MeetingCaller { get; set; }
 
     public EmergencyMeetingInfo ToRpc() => new()
     {
@@ -169,6 +171,32 @@ public class GameLobby
         }
     }
 
+    public async Task SetTurn(GamePlayer loser) {
+        var active_player_ids = new List<Guid>();
+        foreach (var player in _active_players) {
+            active_player_ids.Add(player.Id);
+        }
+
+        if (active_player_ids.Contains(loser.Id)) {
+            _player_index = active_player_ids.IndexOf(loser.Id);
+            var current_player = _active_players[_player_index];
+            if (_board.GetBidPlayer() is null) {
+                await InvokeAll(new RpcResponse { Id = 0, CurrentPlayer = current_player.Id });
+            } else {
+                await InvokeAll(new RpcResponse { Id = 0, CurrentPlayer = current_player.Id, BidPlayer = _board.GetBidPlayer().Id });
+            }
+        } else {
+            _player_index += 1;
+            _player_index = _player_index % _active_players.Count;
+            var current_player = _active_players[_player_index];
+            if (_board.GetBidPlayer() is null) {
+                await InvokeAll(new RpcResponse { Id = 0, CurrentPlayer = current_player.Id });
+            } else {
+                await InvokeAll(new RpcResponse { Id = 0, CurrentPlayer = current_player.Id, BidPlayer = _board.GetBidPlayer().Id });
+            }
+        }
+    }
+
     public async Task NextTurn() {
         _player_index += 1;
         _player_index = _player_index % _active_players.Count;
@@ -210,11 +238,14 @@ public class GameLobby
 
         // otherwise meeting has ended
         var meeting_result = _board.CheckBs();
+        // calculate the next player, should be the person who lost
+        // if it was bs, then the person who bid starts, if it wasn't bs then the person who called the meeting starts
+        GamePlayer loser = meeting_result ? _board.GetBidPlayer() : _emergencyMeeting.MeetingCaller;
         UpdatePlayers(meeting_result);
         await UpdateGame();
         await UpdateDeck();
         await NextRound();
-        await NextTurn();
+        await SetTurn(loser);
         _emergencyMeeting.Reset();
     }
 
@@ -311,6 +342,7 @@ public class GameLobby
             if (!_emergencyMeeting.IsActive)
             {
                 _emergencyMeeting.Start();
+                _emergencyMeeting.MeetingCaller = player.GamePlayer;
                 _emergencyMeeting.VotesFor.Add(_board.GetBidPlayer());
             }
 
