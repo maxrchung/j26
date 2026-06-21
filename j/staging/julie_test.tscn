@@ -147,11 +147,10 @@ visible = false
 position = Vector2(918, 570)
 
 [node name="QuitButton" type="Button" parent="." unique_id=763266404]
-visible = false
 offset_left = 9.0
-offset_top = 601.0
+offset_top = 599.0
 offset_right = 75.0
-offset_bottom = 635.0
+offset_bottom = 633.0
 text = "< Quit"
 
 [connection signal="pressed" from="LobbyStuff/CreateButton" to="PlayerController" method="_on_create_button_pressed"]
