@@ -50,7 +50,6 @@ public class GameLobby
     private List<GameLobbyPlayer> _active_players = new ();
     private List<GameLobbyPlayer> _inactive_players = new ();
     private int _player_index = 0;
-    private int _round_count = 0;
 
     public readonly string Name;
     public readonly Guid Id;
@@ -58,7 +57,8 @@ public class GameLobby
     private readonly EmergencyMeetingState _emergencyMeeting = new();
 
     public const int HAND_LIMIT = 6;
-    public const int SCORE_LIMIT = 100;
+    public const int SCORE_LIMIT = 50;
+    public const int MAX_ROUNDS = 3;
 
 
     public GameLobby(string name, Guid id)
@@ -118,18 +118,33 @@ public class GameLobby
     }
 
     // dupe some logic for BACK COMPAT 
-    private async Task UpdateGameState()
+    private async Task UpdateGameState(GameStateUpdateEvent.Type eventType)
     {
-        var response = new RpcResponse
-        {
-            Id = 0,
-            GameStateUpdateEvent = new GameStateUpdateEvent
+        if (eventType == GameStateUpdateEvent.Type.RoundStart) {
+            var response = new RpcResponse
             {
-                EventType = GameStateUpdateEvent.Type.RoundStart,
-                CurrentRound = CreateCurrentRoundInfo()
-            }
-        };
-        await Task.WhenAll(_players.Select(player => player.Channel.Send(response)).ToList());
+                Id = 0,
+                GameStateUpdateEvent = new GameStateUpdateEvent
+                {
+                    EventType = GameStateUpdateEvent.Type.RoundStart,
+                    CurrentRound = CreateCurrentRoundInfo()
+                }
+            };
+            await Task.WhenAll(_players.Select(player => player.Channel.Send(response)).ToList());
+        } else {
+            var winner = CalculateWinner(_active_players);
+            var response = new RpcResponse
+            {
+                Id = 0,
+                GameStateUpdateEvent = new GameStateUpdateEvent
+                {
+                    EventType = GameStateUpdateEvent.Type.GameOver,
+                    Winner = winner,
+                    CurrentRound = CreateCurrentRoundInfo()
+                }
+            };
+            await Task.WhenAll(_players.Select(player => player.Channel.Send(response)).ToList());
+        }
     }
 
     public RoundInfo CreateCurrentRoundInfo()
@@ -144,9 +159,12 @@ public class GameLobby
     public async Task NextRound()
     {
         _board.NextRound();
-        _round_count += 1;
-        await UpdateHands(); // TODO remove dupe call
-        await UpdateGameState();
+        if (_board.RoundNumber > MAX_ROUNDS) {
+            await UpdateGameState(GameStateUpdateEvent.Type.GameOver);
+        } else {
+            await UpdateHands(); // TODO remove dupe call
+            await UpdateGameState(GameStateUpdateEvent.Type.RoundStart);
+        }
     }
 
     public async Task NextTurn() {
@@ -211,7 +229,7 @@ public class GameLobby
         var new_inactive_players = new List<GameLobbyPlayer>();
         foreach (var player in _active_players) {
             if (player.GamePlayer.Score >= SCORE_LIMIT) {
-                await EndGame();
+                await UpdateGameState(GameStateUpdateEvent.Type.GameOver);
             }
             if (player.GamePlayer.HandSize >= HAND_LIMIT) {
                 new_inactive_players.Add(player);
@@ -237,6 +255,20 @@ public class GameLobby
         }
     }
 
+    public Guid CalculateWinner(List<GameLobbyPlayer> players) {
+        var maxScore = double.NegativeInfinity;
+        var winningGuid = new Guid();
+        foreach (var player in players) {
+            var score = player.GamePlayer.GetScore();
+            if (score > maxScore) {
+                winningGuid = player.Id;
+                maxScore = score;
+            }
+        }
+
+        return winningGuid;
+    }
+
     public async Task UpdateDeck()
     {
         await InvokeAll(new RpcResponse { Id = 0, Deck = DeckToRpc() });
@@ -245,10 +277,6 @@ public class GameLobby
     private async Task BroadcastMeeting()
     {
         await InvokeAll(new RpcResponse { Id = 0, EmergencyMeeting = _emergencyMeeting.ToRpc() });
-    }
-
-    private async Task EndGame() {
-        await InvokeAll(new RpcResponse { Id = 0 });
     }
 
     public async Task InvokeCtl(GameLobbyPlayer player, InvokeCtlType type)

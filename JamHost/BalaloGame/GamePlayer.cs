@@ -21,6 +21,10 @@ public class GamePlayer
         _hand = cards;
     }
 
+    public int GetScore() {
+        return Score;
+    }
+
     public void IncreaseHandSize() {
         HandSize += 1;
     }
