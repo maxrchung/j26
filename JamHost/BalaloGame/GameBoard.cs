@@ -25,6 +25,8 @@ public class GameBoard
             player.SetHand(cards.Skip(offset).Take(player.HandSize).ToList());
             offset += player.HandSize;
         }
+        _bidValue = 0;
+        _bid = new List<Card>();
     }
 
     public GamePlayer AddPlayer(Guid id)
