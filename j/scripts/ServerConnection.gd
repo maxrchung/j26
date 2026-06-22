@@ -219,7 +219,7 @@ func _state_change(new_state: ConnectionState) -> void:
 		_on_connect()
 
 func _ready() -> void:
-	var DEFAULT_HOST = "ws://10.0.0.14:5092/" if OS.is_debug_build() else "wss://bsq.up.railway.app/"
+	var DEFAULT_HOST = "ws://localhost:5092/" if OS.is_debug_build() else "wss://bsq.up.railway.app/"
 	ws_connect(DEFAULT_HOST + "api/v1/game/socket")
 	connection_state_changed.connect(_state_change)
 
