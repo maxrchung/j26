@@ -51,7 +51,8 @@ func _get_value_idx():
 	return value - 1
 
 const _SUIT_MAP = {
-	PlayingCard.SuitName.Special: "FullBlank",
+	PlayingCard.SuitName.None: "FullBlank",
+	PlayingCard.SuitName.Special: "QuestionSuit",
 	PlayingCard.SuitName.Spade: "JustSpade",
 	PlayingCard.SuitName.Heart: "JustHeart",
 	PlayingCard.SuitName.Club: "JustClub",
