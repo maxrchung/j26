@@ -101,12 +101,11 @@ offset_right = 235.25
 offset_bottom = 137.5
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 1
+current_tab = 0
 tab_0/title = "Join"
 tab_1/title = "Create"
 
 [node name="JoinContainer" type="MarginContainer" parent="ConnectionTabs" unique_id=985423122]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 metadata/_tab_name = "Join"
@@ -122,8 +121,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Lobbies"
 
-[node name="Button" type="Button" parent="ConnectionTabs/JoinContainer/VBoxContainer/LobbyTopContainer" unique_id=1674510890]
+[node name="RefreshButton" type="Button" parent="ConnectionTabs/JoinContainer/VBoxContainer/LobbyTopContainer" unique_id=1674510890]
 layout_mode = 2
+disabled = true
 text = "REFRESH"
 
 [node name="LobbyList" type="ItemList" parent="ConnectionTabs/JoinContainer/VBoxContainer" unique_id=586617272]
@@ -150,6 +150,7 @@ disabled = true
 text = "JOIN"
 
 [node name="CreateContainer" type="MarginContainer" parent="ConnectionTabs" unique_id=1674189123]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 metadata/_tab_name = "Create"

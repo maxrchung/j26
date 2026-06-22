@@ -38,10 +38,41 @@ class LobbyInfo:
 		for pObj in obj.get("players", []):
 			players.append(PlayerInfo.new(pObj))
 
+class RpcCard:
+	var suit: String
+	var value: String
+	var face_up: bool
+
+	func _init(obj: Dictionary):
+		suit = obj.get("suit")
+		value = obj.get("value")
+		face_up = true
+
+class PlayerHands:
+	var hands: Dictionary[String, Array] = {}
+
+	func _init(obj: Array):
+		hands = {}
+		for p in obj:
+			var id = p.get("id")
+			var cards = []
+			for c in p.get("cards", []):
+				cards.append(RpcCard.new(c))
+			for i in range(p.cardCount - cards.size()):
+				var fakeCard = RpcCard.new({"suit": "Spade", "value": "Two"})
+				fakeCard.face_up = false
+				cards.append(fakeCard)
+			hands[id] = cards
+
 # signals
 signal connection_state_changed(new_state: ConnectionState)
 signal lobby_list_updated(lobbies: Array[LobbyEntry])
 signal lobby_info_updated(info: LobbyInfo)
+signal hands_updated(hands: PlayerHands)
+signal player_id_updated(player_id: String)
+
+# publics
+var CurrentPlayerID: String = ""
 
 # privates
 var _cxnState: ConnectionState = ConnectionState.Initial
@@ -61,6 +92,13 @@ func join(lobbyId: String, playerName: String) -> void:
 func create_lobby(lobbyName: String) -> void:
 	_invoke("create", {"playerName": lobbyName})
 
+func start_game() -> void:
+	print("starting game")
+	_invoke("invokeCtl", "StartGame")
+
+func refresh_info() -> void:
+	_invoke("getInfo", "Lobbies")
+
 # private methods
 func _invoke(name_: String, data: Variant) -> void:
 	var msg = {"id": 0}
@@ -69,7 +107,7 @@ func _invoke(name_: String, data: Variant) -> void:
 
 func _on_connect():
 	_invoke("connect", {"version": "1"})
-	_invoke("getInfo", "lobbies")
+	refresh_info()
 
 func _parse_lobby_list(data: Dictionary) -> void:
 	var lobbies: Array[LobbyEntry] = []
@@ -85,7 +123,19 @@ func _parse_lobby_change(data: Dictionary) -> void:
 	var lobby_info = LobbyInfo.new(data)
 	lobby_info_updated.emit(lobby_info)
 
+func _parse_game_state_change(data: Dictionary) -> void:
+	var event = data.eventType
+	if event == "RoundStart":
+		StateManager.change_state(StateMgr.GameStateT.Round)
+	elif event == "GameOver":
+		StateManager.change_state(StateMgr.GameStateT.GameOver)
+	
+func _parse_player_hands(data: Array) -> void:
+	var hands = PlayerHands.new(data)
+	hands_updated.emit(hands)
+
 func _handle_msg(text: String) -> void:
+	print("rpc: %s" % text)
 	var err = _json.parse(text)
 	if err != OK:
 		print("Failed to parse JSON: %s" % _json.error_string)
@@ -97,6 +147,16 @@ func _handle_msg(text: String) -> void:
 
 	if "lobbyChange" in d:
 		_parse_lobby_change(d["lobbyChange"])
+	
+	if "gameStateUpdateEvent" in d:
+		_parse_game_state_change(d["gameStateUpdateEvent"])
+
+	if "localIdChange" in d:
+		CurrentPlayerID = d["localIdChange"]
+		player_id_updated.emit(CurrentPlayerID)
+	
+	if "playerHands" in d:
+		_parse_player_hands(d["playerHands"])
 	
 func _state_change(new_state: ConnectionState) -> void:
 	if new_state == ConnectionState.Connected:

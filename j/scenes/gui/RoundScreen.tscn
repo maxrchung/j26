@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dx8bmt68rcahb"]
 
 [ext_resource type="PackedScene" uid="uid://4lycixra0wpo" path="res://objects/gui/BidView.tscn" id="1_mr08t"]
+[ext_resource type="Script" uid="uid://1p4wnxccqujx" path="res://scenes/gui/RoundScreen.gd" id="1_wj2it"]
 [ext_resource type="LabelSettings" uid="uid://dogmbrtdjuv0o" path="res://properties/TitleLabel.tres" id="2_k8xq5"]
 
 [node name="RoundScreen" type="Control" unique_id=1006311977]
@@ -10,6 +11,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_wj2it")
 
 [node name="OwnHand" parent="." unique_id=1375384170 instance=ExtResource("1_mr08t")]
 layout_mode = 1

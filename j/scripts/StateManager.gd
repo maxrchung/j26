@@ -5,7 +5,8 @@ class_name StateMgr
 enum GameStateT {
 	Menu,
 	Lobby,
-	Gameplay
+	Round,
+	GameOver
 }
 
 signal state_changed(new_state: GameStateT)

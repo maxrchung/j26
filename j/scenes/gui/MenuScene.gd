@@ -12,6 +12,8 @@ extends Control
 @onready var LobbyNameField = $"ConnectionTabs/CreateContainer/VBoxContainer/HBoxContainer/LobbyNameInput" as LineEdit
 @onready var LobbyCreateButton = $"ConnectionTabs/CreateContainer/VBoxContainer/HBoxContainer/LobbyCreateButton" as Button
 
+@onready var RefreshButton = $"ConnectionTabs/JoinContainer/VBoxContainer/LobbyTopContainer/RefreshButton" as Button
+
 var _lobbyMap: Dictionary[int, String] = {}
 
 func _toggle_help():
@@ -44,6 +46,10 @@ func _create_lobby(_trash: String = "") -> void:
 	ServerConnection.create_lobby(lobbyName)
 	ConnectionTabs.current_tab = 0
 
+func _refresh_lobbies() -> void:
+	RefreshButton.disabled = true
+	ServerConnection.refresh_info()
+
 func _handle_cxn_state_change(new_state: ServerConnection.ConnectionState) -> void:
 	if new_state == ServerConnection.ConnectionState.Connected:
 		ConnectionTabs.visible = true
@@ -56,9 +62,14 @@ func _handle_cxn_state_change(new_state: ServerConnection.ConnectionState) -> vo
 func _handle_lobby_list_updated(lobbies: Array[ServerConnection.LobbyEntry]) -> void:
 	LobbyList.clear()
 	_lobbyMap.clear()
+	var forceIdx = 0
 	for lobby in lobbies:
-		_lobbyMap[LobbyList.add_item(lobby.name)] = lobby.id
-	LobbyList.select(0)
+		var idx = LobbyList.add_item(lobby.name)
+		_lobbyMap[idx] = lobby.id
+		if lobby.default:
+			forceIdx = idx
+	LobbyList.select(forceIdx)
+	RefreshButton.disabled = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -74,6 +85,8 @@ func _ready() -> void:
 	LobbyNameField.text_changed.connect(_lobby_name_validation)
 	LobbyNameField.text_submitted.connect(_create_lobby)
 	LobbyCreateButton.pressed.connect(_create_lobby)
+
+	RefreshButton.pressed.connect(_refresh_lobbies)
 
 	HelpButton.connect("button_up", _toggle_help)
 	pass # Replace with function body.
