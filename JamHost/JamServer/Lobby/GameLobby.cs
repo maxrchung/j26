@@ -177,7 +177,7 @@ public class GameLobby
         {
             await UpdateHands(); // TODO remove dupe call
             await UpdateGameState(GameStateUpdateEvent.Type.RoundStart);
-            await InvokeAll(new RpcResponse { Bid = new List<Card>() });
+            await InvokeAll(new RpcResponse { Id = 0, Bid = new List<Card>() });
         }
     }
 
