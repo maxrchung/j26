@@ -143,7 +143,7 @@ public class GameLobby
                 {
                     EventType = GameStateUpdateEvent.Type.RoundStart,
                     CurrentRound = CreateCurrentRoundInfo(),
-                    Players = _players.Select(LobbyPlayer.From).ToList()
+                    Players = _players.Select(LobbyPlayer.From).ToList(),
                     Bid = new List<Card>(),
                 },
             GameStateUpdateEvent.Type.GameOver =>
