@@ -1,8 +1,13 @@
 [gd_scene format=3 uid="uid://4lycixra0wpo"]
 
 [ext_resource type="Script" uid="uid://c6baib6hv58yp" path="res://objects/gui/BidView.gd" id="1_swsre"]
+[ext_resource type="AudioStream" uid="uid://bd18sw42ip05j" path="res://assets/sounds/bgm.ogg" id="2_431cd"]
 
 [node name="BidView" type="HBoxContainer" unique_id=1375384170]
 theme_override_constants/separation = 10
 alignment = 1
 script = ExtResource("1_swsre")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=848756348]
+stream = ExtResource("2_431cd")
+autoplay = true

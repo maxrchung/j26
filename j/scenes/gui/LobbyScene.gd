@@ -2,8 +2,10 @@ extends Control
 
 @onready var LobbyTitle = $"Titlebar/MarginContainer/Control/LobbyTitle" as Label
 @onready var StartButton = $"BottomContainer/MarginContainer/StartButton" as Button
+@onready var generic_click: AudioStreamPlayer = $generic_click
 
 func _start_game_pressed() -> void:
+	generic_click.play()
 	ServerConnection.start_game()
 
 func _handle_lobby_info_updated(info: SrvCxn.LobbyInfo) -> void:

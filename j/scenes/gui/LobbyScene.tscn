@@ -3,6 +3,7 @@
 [ext_resource type="LabelSettings" uid="uid://dogmbrtdjuv0o" path="res://properties/TitleLabel.tres" id="1_idljb"]
 [ext_resource type="Script" uid="uid://bgr0crlfrye5x" path="res://scenes/gui/LobbyScene.gd" id="1_v0jgi"]
 [ext_resource type="Script" uid="uid://cwi0ud5pp5a2c" path="res://scenes/gui/LobbyPlayerList.gd" id="3_hgjdt"]
+[ext_resource type="AudioStream" uid="uid://dq7iqjj05ieqw" path="res://assets/sounds/Click_stereo.ogg.mp3" id="4_dy4rs"]
 
 [node name="LobbyScene" type="Control" unique_id=1768402689]
 layout_mode = 3
@@ -103,3 +104,6 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 48
 disabled = true
 text = "START GAME"
+
+[node name="generic_click" type="AudioStreamPlayer" parent="." unique_id=1691490824]
+stream = ExtResource("4_dy4rs")
