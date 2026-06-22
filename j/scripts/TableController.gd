@@ -41,7 +41,7 @@ func _create_other_players(players) -> void:
 	var i_other = 0
 	var n_other_players = game_state.player_count - 1
 	for player in players:
-		if (player.id == self_id): continue # don't count self
+		if (player.id == ServerConnection.CurrentPlayerID): continue # don't count self
 		
 		var progress_ratio: float = _calculate_progress_ratio(i_other, n_other_players)
 
