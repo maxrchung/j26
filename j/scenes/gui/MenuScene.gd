@@ -8,6 +8,7 @@ extends Control
 
 @onready var PlayerNameField = $"ConnectionTabs/JoinContainer/VBoxContainer/LobbyBottomContainer/PlayerName" as LineEdit
 @onready var JoinButton = $"ConnectionTabs/JoinContainer/VBoxContainer/LobbyBottomContainer/JoinButton" as Button
+@onready var click_fx: AudioStreamPlayer = $click_fx
 
 @onready var LobbyNameField = $"ConnectionTabs/CreateContainer/VBoxContainer/HBoxContainer/LobbyNameInput" as LineEdit
 @onready var LobbyCreateButton = $"ConnectionTabs/CreateContainer/VBoxContainer/HBoxContainer/LobbyCreateButton" as Button
@@ -17,6 +18,7 @@ extends Control
 var _lobbyMap: Dictionary[int, String] = {}
 
 func _toggle_help():
+	click_fx.play()
 	HelpPanel.visible = not HelpPanel.visible
 
 func _name_validation(new_name: String) -> void:
@@ -26,6 +28,7 @@ func _name_validation(new_name: String) -> void:
 		JoinButton.disabled = false
 
 func _join_lobby(_trash: String = "") -> void:
+	click_fx.play()
 	if JoinButton.disabled:
 		return
 	var lobbyId = _lobbyMap.get(LobbyList.get_selected_items()[0])
@@ -41,12 +44,14 @@ func _lobby_name_validation(new_name: String) -> void:
 		LobbyCreateButton.disabled = false
 
 func _create_lobby(_trash: String = "") -> void:
+	click_fx.play()
 	var lobbyName = LobbyNameField.text
 	print("creating lobby with name ", lobbyName)
 	ServerConnection.create_lobby(lobbyName)
 	ConnectionTabs.current_tab = 0
 
 func _refresh_lobbies() -> void:
+	click_fx.play()
 	RefreshButton.disabled = true
 	ServerConnection.refresh_info()
 

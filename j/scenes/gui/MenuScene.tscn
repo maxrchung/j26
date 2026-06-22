@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bct2ik04om1yn" path="res://scenes/gui/MenuScene.gd" id="1_8ehqy"]
 [ext_resource type="LabelSettings" uid="uid://dogmbrtdjuv0o" path="res://properties/TitleLabel.tres" id="3_ilsfx"]
+[ext_resource type="AudioStream" uid="uid://dq7iqjj05ieqw" path="res://assets/sounds/Click_stereo.ogg.mp3" id="3_xlsgy"]
 
 [node name="MenuScene" type="Control" unique_id=798910656]
 layout_mode = 3
@@ -181,3 +182,6 @@ placeholder_text = "LOBBY NAME"
 layout_mode = 2
 disabled = true
 text = "CREATE"
+
+[node name="click_fx" type="AudioStreamPlayer" parent="." unique_id=610579508]
+stream = ExtResource("3_xlsgy")
