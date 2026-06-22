@@ -16,25 +16,17 @@ class DebugPlayer:
 	#var card_count = randi_range(1,6)
 	
 func _ready() -> void:
-	ServerConnection.game_started.connect(_init_table)
-	if name == "DebugTable":
-		for i in debug_lobby_size:
-			debug_players.append(DebugPlayer.new())
-		_init_table(debug_players)
-		
-func _init_table(players) -> void:
-	print("init table called")
 	game_state = GameState.new()
-	game_state.player_count = players.size()
-	_create_other_players(players)
-
-func update_player_hands(player_hands) -> void:
-	player_hands
-	for other_player in game_state.other_players:
-		pass
+	ServerConnection.lobby_info_updated.connect(_spawn_players)
+	
+func _spawn_players(info: SrvCxn.LobbyInfo) -> void:
+	game_state.player_count = info.players.size()
+	for other in game_state.other_players.values():
+		other.queue_free()
+	game_state.other_players.clear()
+	_create_other_players(info.players)
 	
 func _create_other_players(players) -> void:
-	
 	var curve: Curve2D = spawn_path.curve
 	var total_length: float = curve.get_baked_length()
 	
@@ -63,7 +55,7 @@ func _create_other_players(players) -> void:
 # Calculate the proportional distance along the path (0.0 to 1.0)
 func _calculate_progress_ratio(player_idx: int, n_other: int) -> float:
 	# Hard code distances for low player ct
-	if n_other == 1: return 0.5 
+	if n_other == 1: return 0.5
 	if n_other == 2: return [0.2, 0.8][player_idx]
 	if n_other == 3: return [0.1, 0.5, 0.9][player_idx]
 	return float(player_idx) / float(n_other - 1)

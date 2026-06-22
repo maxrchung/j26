@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://1p4wnxccqujx" path="res://scenes/gui/RoundScreen.gd" id="1_wj2it"]
 [ext_resource type="LabelSettings" uid="uid://dogmbrtdjuv0o" path="res://properties/TitleLabel.tres" id="2_k8xq5"]
 [ext_resource type="Texture2D" uid="uid://ckla2viltl287" path="res://mj/table.png" id="2_kp8eb"]
+[ext_resource type="PackedScene" uid="uid://i4tl6cnabbg4" path="res://objects/gui/BidEntry.tscn" id="4_8yynj"]
 
 [sub_resource type="Curve2D" id="Curve2D_8yynj"]
 bake_interval = 1.0
@@ -41,7 +42,7 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -175.0
+offset_top = -350.0
 grow_horizontal = 2
 grow_vertical = 0
 offset_transform_enabled = true
@@ -51,16 +52,13 @@ OwnerID = "$SELF"
 show_stacked = true
 card_scale = 2.0
 
-[node name="BidView" parent="." unique_id=1484051860 instance=ExtResource("1_mr08t")]
+[node name="BidEntry" parent="." unique_id=2095121154 instance=ExtResource("4_8yynj")]
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
-anchor_right = 1.0
 anchor_bottom = 0.5
 offset_top = -87.5
 offset_bottom = 87.5
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="." unique_id=1765133301]
 layout_mode = 1
@@ -80,3 +78,24 @@ alignment = 1
 layout_mode = 2
 text = "Round %d"
 label_settings = ExtResource("2_k8xq5")
+
+[node name="ExtraButtons" type="VBoxContainer" parent="." unique_id=1411605105]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -248.0
+offset_top = -72.0
+grow_horizontal = 0
+grow_vertical = 0
+alignment = 2
+
+[node name="BidButton" type="Button" parent="ExtraButtons" unique_id=1152231508]
+layout_mode = 2
+text = "SUBMIT BID"
+
+[node name="CallButton" type="Button" parent="ExtraButtons" unique_id=883805019]
+layout_mode = 2
+text = "EMERGENCY MEETING"

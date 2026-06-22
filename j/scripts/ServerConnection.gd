@@ -72,11 +72,11 @@ class PlayerHands:
 
 class EmergencyMeetingInfo:
 	var active: bool
-	var votes_for: Array[String]
-	var votes_against: Array[String]
+	var votes_for: Array
+	var votes_against: Array
 
 	func _init(obj: Dictionary):
-		active = obj.get("active")
+		active = obj.get("isActive")
 		votes_for = obj.get("votesFor")
 		votes_against = obj.get("votesAgainst")
 
@@ -89,9 +89,13 @@ signal player_id_updated(player_id: String)
 signal emergency_meeting_updated(info: EmergencyMeetingInfo)
 signal bid_changed(bid: RpcHand)
 signal game_started(players: Array[PlayerInfo])
+signal turn_player_changed(player_id: String)
+signal bid_player_changed(player_id: String)
 
 # publics
 var CurrentPlayerID: String = ""
+var TurnPlayerID: String = ""
+var BidPlayerID: String = ""
 
 # privates
 var _cxnState: ConnectionState = ConnectionState.Initial
@@ -112,11 +116,19 @@ func create_lobby(lobbyName: String) -> void:
 	_invoke("create", {"playerName": lobbyName})
 
 func start_game() -> void:
-	print("starting game")
 	_invoke("invokeCtl", "StartGame")
+
+func vote_for() -> void:
+	_invoke("invokeCtl", "EmergencyMeetingVoteFor")
+
+func vote_against() -> void:
+	_invoke("invokeCtl", "EmergencyMeetingVoteAgainst")
 
 func refresh_info() -> void:
 	_invoke("getInfo", "Lobbies")
+
+func submit_bid(data: Array) -> void:
+	_invoke("bid", {"cards": data})
 
 # private methods
 func _invoke(name_: String, data: Variant) -> void:
@@ -166,6 +178,18 @@ func _handle_msg(text: String) -> void:
 		return
 	var d = _json.data
 
+	if "localIdChange" in d:
+		CurrentPlayerID = d["localIdChange"]
+		player_id_updated.emit(CurrentPlayerID)
+
+	if "currentPlayer" in d:
+		TurnPlayerID = d["currentPlayer"]
+		turn_player_changed.emit(TurnPlayerID)
+	
+	if "bidPlayer" in d:
+		BidPlayerID = d["bidPlayer"]
+		bid_player_changed.emit(BidPlayerID)
+
 	if "lobbyList" in d:
 		_parse_lobby_list(d["lobbyList"])
 
@@ -175,10 +199,6 @@ func _handle_msg(text: String) -> void:
 	if "gameStateUpdateEvent" in d:
 		_parse_game_state_change(d["gameStateUpdateEvent"])
 
-	if "localIdChange" in d:
-		CurrentPlayerID = d["localIdChange"]
-		player_id_updated.emit(CurrentPlayerID)
-	
 	if "playerHands" in d:
 		_parse_player_hands(d["playerHands"])
 

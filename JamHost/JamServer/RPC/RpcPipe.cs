@@ -21,7 +21,7 @@ public interface IRpcListener
 
     public ValueTask<OkResponse> InvokeCtlAsync(InvokeCtlType type);
 
-    public ValueTask<OkResponse> AcceptBidAsync(List<Dictionary<string, string>> cards);
+    public ValueTask<OkResponse> AcceptBidAsync(List<RequestCard> cards);
 
     public void OnError(Exception e);
 }

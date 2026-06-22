@@ -132,7 +132,6 @@ public class GameLobby
             GameStateUpdateEvent = CreateGameStateUpdateEvent(eventType)
         };
         await Task.WhenAll(_players.Select(player => player.Channel.Send(response)).ToList());
-
     }
 
     private GameStateUpdateEvent CreateGameStateUpdateEvent(GameStateUpdateEvent.Type eventType)
@@ -140,20 +139,20 @@ public class GameLobby
         return eventType switch
         {
             GameStateUpdateEvent.Type.RoundStart =>
-            new GameStateUpdateEvent
-            {
-                EventType = GameStateUpdateEvent.Type.RoundStart,
-                CurrentRound = CreateCurrentRoundInfo(),
-                Players = _players.Select(LobbyPlayer.From).ToList()
-            },
+                new GameStateUpdateEvent
+                {
+                    EventType = GameStateUpdateEvent.Type.RoundStart,
+                    CurrentRound = CreateCurrentRoundInfo(),
+                    Players = _players.Select(LobbyPlayer.From).ToList()
+                },
             GameStateUpdateEvent.Type.GameOver =>
-               new GameStateUpdateEvent
-               {
-                   EventType = GameStateUpdateEvent.Type.GameOver,
-                   Winner = CalculateWinner(_players),
-                   CurrentRound = CreateCurrentRoundInfo(),
-                   Players = _players.Select(LobbyPlayer.From).ToList()
-               },
+                new GameStateUpdateEvent
+                {
+                    EventType = GameStateUpdateEvent.Type.GameOver,
+                    Winner = CalculateWinner(_players),
+                    CurrentRound = CreateCurrentRoundInfo(),
+                    Players = _players.Select(LobbyPlayer.From).ToList()
+                },
             _ => throw new ArgumentException("Invalid GameStateUpdateEvent.Type")
         };
     }
@@ -181,72 +180,81 @@ public class GameLobby
         }
     }
 
-    public async Task SetTurn(GamePlayer loser) {
+    public async Task SetTurn(GamePlayer loser)
+    {
         var player_ids = new List<Guid>();
-        foreach (var player in _players) {
+        foreach (var player in _players)
+        {
             player_ids.Add(player.Id);
         }
 
-        if (player_ids.Contains(loser.Id)) {
+        if (player_ids.Contains(loser.Id))
+        {
             _player_index = player_ids.IndexOf(loser.Id);
             var current_player = _players[_player_index];
-            if (_board.GetBidPlayer() is null) {
+            if (_board.GetBidPlayer() is null)
+            {
                 await InvokeAll(new RpcResponse { Id = 0, CurrentPlayer = current_player.Id });
-            } else {
-                await InvokeAll(new RpcResponse { Id = 0, CurrentPlayer = current_player.Id, BidPlayer = _board.GetBidPlayer().Id });
             }
-        } else {
+            else
+            {
+                await InvokeAll(new RpcResponse
+                    { Id = 0, CurrentPlayer = current_player.Id, BidPlayer = _board.GetBidPlayer().Id });
+            }
+        }
+        else
+        {
             _player_index += 1;
             _player_index = _player_index % _players.Count;
             var current_player = _players[_player_index];
-            if (_board.GetBidPlayer() is null) {
+            if (_board.GetBidPlayer() is null)
+            {
                 await InvokeAll(new RpcResponse { Id = 0, CurrentPlayer = current_player.Id });
-            } else {
-                await InvokeAll(new RpcResponse { Id = 0, CurrentPlayer = current_player.Id, BidPlayer = _board.GetBidPlayer().Id });
+            }
+            else
+            {
+                await InvokeAll(new RpcResponse
+                    { Id = 0, CurrentPlayer = current_player.Id, BidPlayer = _board.GetBidPlayer().Id });
             }
         }
     }
 
-    public async Task NextTurn() {
+    public async Task NextTurn()
+    {
         _player_index += 1;
         _player_index = _player_index % _players.Count;
         var current_player = _players[_player_index];
-        if (_board.GetBidPlayer() is null) {
+        if (_board.GetBidPlayer() is null)
+        {
             await InvokeAll(new RpcResponse { Id = 0, CurrentPlayer = current_player.Id });
         }
         else
         {
-            await InvokeAll(new RpcResponse { Id = 0, CurrentPlayer = current_player.Id, BidPlayer = _board.GetBidPlayer().Id });
+            await InvokeAll(new RpcResponse
+                { Id = 0, CurrentPlayer = current_player.Id, BidPlayer = _board.GetBidPlayer().Id });
         }
     }
 
-    public async Task<bool> ValidateBid(List<Dictionary<string, string>> raw_bid)
+    public async Task<bool> ValidateBid(List<RequestCard> rawBid)
     {
-        var bid = new List<Card>();
-        foreach (Dictionary<string, string> raw_card in raw_bid)
-        {
-            foreach (var (suit, value) in raw_card)
-            {
-                Enum.TryParse<CardSuit>(suit, true, out CardSuit card_suit);
-                Enum.TryParse<CardValue>(value, true, out CardValue card_value);
-                var new_card = new Card(card_value, card_suit);
-                bid.Add(new_card);
-            }
-        }
+        var bid = rawBid.Select(x => new Card(x.Value, x.Suit)).ToList();
 
         if (_board.ValidateBid(bid))
         {
             _board.SetBid(bid);
             _board.SetBidPlayer(_players[_player_index].GamePlayer);
-            await InvokeAll(new RpcResponse {Id = 0, Bid = bid });
+            await InvokeAll(new RpcResponse { Id = 0, Bid = bid });
             await NextTurn();
             return true;
         }
+
         return false;
     }
 
-    public async Task MeetingEnd() {
-        if (_emergencyMeeting.VotesFor.Count + _emergencyMeeting.VotesAgainst.Count < _players.Count) {
+    public async Task MeetingEnd()
+    {
+        if (_emergencyMeeting.VotesFor.Count + _emergencyMeeting.VotesAgainst.Count < _players.Count)
+        {
             return;
         }
 
@@ -267,7 +275,8 @@ public class GameLobby
     {
         // false == not bs, the bid is valid
         // true == bs, bid is not valid
-        if (result) {
+        if (result)
+        {
             Penalize(new List<GamePlayer>() { _board.GetBidPlayer() }); // penalize the person that bid
             Reward(_emergencyMeeting.VotesAgainst);
         }
@@ -278,25 +287,32 @@ public class GameLobby
         }
     }
 
-    public async Task UpdateGame() {
-        foreach (var player in _players) {
-            if (player.GamePlayer.Score >= SCORE_LIMIT) {
+    public async Task UpdateGame()
+    {
+        foreach (var player in _players)
+        {
+            if (player.GamePlayer.Score >= SCORE_LIMIT)
+            {
                 await UpdateGameState(GameStateUpdateEvent.Type.GameOver);
             }
         }
     }
 
-    public void Penalize(List<GamePlayer> players) {
+    public void Penalize(List<GamePlayer> players)
+    {
         var points = _board.GetBidValue() / players.Count;
-        foreach (var player in players) {
+        foreach (var player in players)
+        {
             player.IncreaseHandSize();
             player.DecreasePoints(points);
         }
     }
 
-    public void Reward(List<GamePlayer> players) {
+    public void Reward(List<GamePlayer> players)
+    {
         var points = _board.GetBidValue() / players.Count;
-        foreach (var player in players) {
+        foreach (var player in players)
+        {
             player.IncreasePoints(points);
         }
     }
@@ -343,6 +359,7 @@ public class GameLobby
             {
                 return;
             }
+
             _emergencyMeeting.VotesFor.Add(player.GamePlayer);
             await BroadcastMeeting();
             await MeetingEnd();

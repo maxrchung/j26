@@ -16,13 +16,15 @@ offset_bottom = 175.0
 mouse_filter = 2
 ratio = 0.714286
 script = ExtResource("3_2wr72")
+suit = 4
+value = 4
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1561224529]
 texture_filter = 1
 texture_repeat = 1
 material = SubResource("ShaderMaterial_yei77")
 instance_shader_parameters/FacingUp = true
-instance_shader_parameters/Offset = Vector2i(0, 0)
+instance_shader_parameters/Offset = Vector2i(2, 4)
 layout_mode = 2
 mouse_filter = 2
 texture = ExtResource("2_2wr72")

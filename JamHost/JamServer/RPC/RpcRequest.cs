@@ -1,3 +1,5 @@
+using BalaloGame;
+
 namespace JamServer.RPC;
 
 public record ConnectRequest
@@ -22,6 +24,8 @@ public record CreateRequest
     public required string PlayerName { get; init; }
 }
 
+public record RequestCard(CardSuit Suit, CardValue Value);
+
 public record JoinRequest
 {
     public required Guid LobbyId { get; init; }
@@ -30,7 +34,7 @@ public record JoinRequest
 
 public record BidRequest
 { 
-    public required List<Dictionary<string, string>> Cards { get; init; }
+    public required List<RequestCard> Cards { get; init; }
 }
 
 public record TestRequest

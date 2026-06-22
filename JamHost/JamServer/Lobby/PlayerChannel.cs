@@ -94,7 +94,7 @@ public class PlayerChannel : IRpcListener
         return lobby.Id;
     }
 
-    public async ValueTask<OkResponse> AcceptBidAsync(List<Dictionary<string, string>> cards)
+    public async ValueTask<OkResponse> AcceptBidAsync(List<RequestCard> cards)
     {
         var lobby = _lobbyPlayer.Lobby;
         var validated = await lobby.ValidateBid(cards);

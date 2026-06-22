@@ -13,6 +13,7 @@ var hand = [[PlayingCard.SuitName.Spade, 6, true], [PlayingCard.SuitName.Heart, 
 @export var OwnerID: String = ""
 
 const CARD_VALUE_MAP = {
+	"None": 1,
 	"Two": 2,
 	"Three": 3,
 	"Four": 4,
@@ -25,7 +26,7 @@ const CARD_VALUE_MAP = {
 	"Jack": 11,
 	"Queen": 12,
 	"King": 13,
-	"Ace": 14
+	"Ace": 14,
 }
 
 @export var show_stacked: bool = false:
@@ -88,5 +89,6 @@ func _handle_bid_update(bid: SrvCxn.RpcHand):
 func _ready() -> void:
 	_update_layout()
 	_update_hand()
-	ServerConnection.hands_updated.connect(_handle_update)
-	ServerConnection.bid_changed.connect(_handle_bid_update)
+	if !Engine.is_editor_hint():
+		ServerConnection.hands_updated.connect(_handle_update)
+		ServerConnection.bid_changed.connect(_handle_bid_update)

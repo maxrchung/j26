@@ -21,6 +21,20 @@ enum SuitName {
 	Heart = 1,
 	Club = 2,
 	Diamond = 3,
+	Special = 4, # for special snowflakes :)
+	None = 4, # :)
+}
+
+const SPECIAL_CARDS = {
+	"FullBlank": 0,
+	"JustHeart": 6,
+	"JustDiamond": 7,
+	"JustSpade": 8,
+	"JustClub": 9,
+	"QuestionValue": 10,
+	"QuestionSuit": 11,
+	"OmegaValue": 12,
+	"OmegaSuit": 13,
 }
 
 const SuitMap = [SuitName.Spade, SuitName.Heart, SuitName.Club, SuitName.Diamond]
