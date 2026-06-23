@@ -30,7 +30,7 @@ text = "BS Poker is a bluffing game where you deal cards
 and try to guess the highest scoring hand. You
 call BS when you think a hand doesn't exist.
 
-Priority
+Priority:
 - Royal flush
 - Striaght flush
 - Four of a kind

@@ -149,6 +149,7 @@ func _handle_rsp(text: String) -> void:
 				"cards": []
 			})	
 		$"../PlayerInfos".update_players(playerHands, myPlayerId)
+		$"../PlayersLabel".text = "Players: " + str(playerHands.size())
 		
 	if "playerHands" in d:
 		playerHands = d.playerHands
