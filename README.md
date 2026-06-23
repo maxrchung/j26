@@ -1,5 +1,7 @@
 <img width="750" height="350" alt="jqk_hearts" src="https://github.com/user-attachments/assets/0f00814d-beb0-4002-8a7f-60580dc48601" />
 
+# bs?
+
 bs? is our take on BS Poker (sometimes known as Liar's Poker). It's a bluffing
 card game where you deal out a few cards to a group, then you take turns trying
 to guess the better poker hand you can complete with everyone's cards. If you
